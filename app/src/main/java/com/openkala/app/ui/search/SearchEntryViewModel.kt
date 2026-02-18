@@ -60,9 +60,11 @@ class SearchEntryViewModel @Inject constructor(
     private fun loadTrends() {
         trendsJob?.cancel()
         trendsJob = viewModelScope.launch {
+            val cached = repository.readCachedHotTrends()
             _uiState.update {
                 it.copy(
-                    isLoadingTrends = true,
+                    trends = cached?.trends ?: it.trends,
+                    isLoadingTrends = cached == null,
                     errorMessage = null
                 )
             }
@@ -81,7 +83,11 @@ class SearchEntryViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingTrends = false,
-                        errorMessage = error.message ?: "خطا در دریافت جستجوهای پرطرفدار"
+                        errorMessage = if (it.trends.isEmpty()) {
+                            error.message ?: "خطا در دریافت جستجوهای پرطرفدار"
+                        } else {
+                            null
+                        }
                     )
                 }
             }

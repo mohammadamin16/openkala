@@ -21,9 +21,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.openkala.app.ui.theme.OpenKalaColorTokens
@@ -43,6 +46,7 @@ fun SharedSearchBar(
     onClick: (() -> Unit)? = null,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
+    focusRequester: FocusRequester? = null,
     sharedKey: String = SHARED_SEARCH_BAR_KEY,
     textStyle: TextStyle = OpenKalaTypographyTokens.SubtitleStrong
 ) {
@@ -83,27 +87,47 @@ fun SharedSearchBar(
             modifier = Modifier.size(28.dp)
         )
 
-        BasicTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            readOnly = readOnly,
-            singleLine = true,
-            textStyle = textStyle.copy(color = OpenKalaColorTokens.TextHigh),
-            modifier = Modifier.weight(1f),
-            decorationBox = { innerTextField ->
-                Box(contentAlignment = Alignment.CenterStart) {
-                    if (query.isBlank()) {
-                        Text(
-                            text = placeholder,
-                            style = textStyle,
-                            color = OpenKalaColorTokens.TextLow,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+        if (readOnly) {
+            Text(
+                text = query.ifBlank { placeholder },
+                style = textStyle,
+                color = if (query.isBlank()) OpenKalaColorTokens.TextLow else OpenKalaColorTokens.TextHigh,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.weight(1f)
+            )
+        } else {
+            BasicTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                readOnly = false,
+                singleLine = true,
+                textStyle = textStyle.copy(color = OpenKalaColorTokens.TextHigh),
+                modifier = Modifier
+                    .weight(1f)
+                    .then(
+                        if (focusRequester != null) {
+                            Modifier.focusRequester(focusRequester)
+                        } else {
+                            Modifier
+                        }
+                    ),
+                decorationBox = { innerTextField ->
+                    Box(contentAlignment = Alignment.CenterStart) {
+                        if (query.isBlank()) {
+                            Text(
+                                text = placeholder,
+                                style = textStyle,
+                                color = OpenKalaColorTokens.TextLow,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        innerTextField()
                     }
-                    innerTextField()
                 }
-            }
-        )
+            )
+        }
     }
 }

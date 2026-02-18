@@ -38,11 +38,16 @@ data class HomeStyleSpec(
     val shortcutRowHorizontalPadding: Dp = 18.dp,
     val shortcutRowVerticalPadding: Dp = 8.dp,
 
-    val incredibleHeaderTextSizeSp: Int = 44,
+    val incredibleHeaderTextSizeSp: Int = 34,
     val timerBadgeHeight: Dp = 42.dp,
     val timerBadgeMinWidth: Dp = 36.dp,
     val productCardWidth: Dp = 160.dp,
     val productImageSize: Dp = 120.dp,
+    val topBannersSectionHorizontalPadding: Dp = 12.dp,
+    val topBannersSectionVerticalPadding: Dp = 12.dp,
+    val topBannersCardAspectRatio: Float = 4f / 3f,
+    val topBannersCardRadius: Dp = 12.dp,
+    val topBannersGridGap: Dp = 8.dp,
 
     val bottomNavTopPadding: Dp = 6.dp,
     val bottomNavBottomPadding: Dp = 14.dp,

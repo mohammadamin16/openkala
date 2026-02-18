@@ -33,4 +33,10 @@ interface DigikalaApiService {
     suspend fun getAutocomplete(
         @Query("q") query: String? = null
     ): JsonObject
+
+    @GET("v1/dictionaries/")
+    suspend fun getDictionaries(
+        @Query("types[0]") type: String,
+        @Query("hashes[0]") hash: String = ""
+    ): JsonObject
 }

@@ -34,6 +34,7 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
         .take(5)
 
     val incredibleSection = homeData.objectAt("incredible_products").toIncredibleSection()
+    val topBanners = homeData.arrayAt("top_banners").mapNotNull { it.toBanner() }
 
     return HomeScreenData(
         topStripBanner = topStrip,
@@ -41,7 +42,8 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
         selectedTabName = selectedTab,
         heroBanners = heroBanners,
         shortcuts = shortcuts,
-        incredibleOffers = incredibleSection
+        incredibleOffers = incredibleSection,
+        topBanners = topBanners
     )
 }
 
@@ -153,4 +155,3 @@ private fun JsonElement.asBoolean(): Boolean? {
     val primitive = this as? JsonPrimitive ?: return null
     return primitive.contentOrNull?.toBooleanStrictOrNull()
 }
-

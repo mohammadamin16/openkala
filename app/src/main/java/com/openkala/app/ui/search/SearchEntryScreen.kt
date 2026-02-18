@@ -32,10 +32,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +49,7 @@ import com.openkala.app.domain.model.SearchTrendItem
 import com.openkala.app.ui.theme.OpenKalaColorTokens
 import com.openkala.app.ui.theme.OpenKalaRadiusTokens
 import com.openkala.app.ui.theme.OpenKalaTypographyTokens
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -78,6 +83,16 @@ private fun SearchEntryScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        // Let shared-element transition settle, then focus and open keyboard.
+        delay(260)
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
+
     Scaffold(
         containerColor = OpenKalaColorTokens.AppBackground,
         contentColor = OpenKalaColorTokens.TextPrimary,
@@ -110,7 +125,8 @@ private fun SearchEntryScreen(
                         readOnly = false,
                         modifier = Modifier.weight(1f),
                         sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        focusRequester = focusRequester
                     )
                 }
             }

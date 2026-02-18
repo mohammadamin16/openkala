@@ -6,7 +6,8 @@ data class HomeScreenData(
     val selectedTabName: String,
     val heroBanners: List<Banner>,
     val shortcuts: List<ShortcutItem>,
-    val incredibleOffers: IncredibleSection
+    val incredibleOffers: IncredibleSection,
+    val topBanners: List<Banner>
 )
 
 data class Banner(
@@ -56,4 +57,3 @@ data class HomeScreenPayload(
     val data: HomeScreenData,
     val source: DataSource
 )
-

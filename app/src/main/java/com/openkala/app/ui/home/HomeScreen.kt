@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +33,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Home
@@ -63,6 +65,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.openkala.app.domain.model.Banner
 import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.SuperAppTab
@@ -161,7 +164,7 @@ private fun HomeScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
-        bottomBar = { HomeBottomBar(styleSpec) }
+        bottomBar = {}
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -227,6 +230,12 @@ private fun HomeScreen(
                     onProductClick = onProductClick
                 )
             }
+            item {
+                TopBannersSection(
+                    banners = data.topBanners,
+                    styleSpec = styleSpec
+                )
+            }
 
             if (isRefreshing && !pixelPerfectMode) {
                 item {
@@ -242,6 +251,68 @@ private fun HomeScreen(
                             color = OpenKalaColorTokens.TextLow
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun TopBannersSection(
+    banners: List<Banner>,
+    styleSpec: HomeStyleSpec,
+    onBannerClick: (Banner) -> Unit = {}
+) {
+    val visibleBanners = banners.take(4)
+    if (visibleBanners.isEmpty()) return
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(OpenKalaColorTokens.AppBackground)
+            .padding(
+                horizontal = styleSpec.topBannersSectionHorizontalPadding,
+                vertical = styleSpec.topBannersSectionVerticalPadding
+            )
+            .testTag("home_top_banners_section"),
+        verticalArrangement = Arrangement.spacedBy(styleSpec.topBannersGridGap)
+    ) {
+        if (visibleBanners.size == 1) {
+            val banner = visibleBanners.first()
+            AsyncImage(
+                model = banner.imageUrl,
+                contentDescription = banner.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(styleSpec.topBannersCardAspectRatio)
+                    .clip(RoundedCornerShape(styleSpec.topBannersCardRadius))
+                    .clickable { onBannerClick(banner) }
+                    .testTag("home_top_banner_card")
+            )
+            return
+        }
+
+        visibleBanners.chunked(2).forEach { rowBanners ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(styleSpec.topBannersGridGap)
+            ) {
+                rowBanners.forEach { banner ->
+                    AsyncImage(
+                        model = banner.imageUrl,
+                        contentDescription = banner.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(styleSpec.topBannersCardAspectRatio)
+                            .clip(RoundedCornerShape(styleSpec.topBannersCardRadius))
+                            .clickable { onBannerClick(banner) }
+                            .testTag("home_top_banner_card")
+                    )
+                }
+                if (rowBanners.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -501,50 +572,21 @@ private fun TimerBadge(totalSeconds: Long, styleSpec: HomeStyleSpec) {
 
 @Composable
 private fun TimePart(value: String, styleSpec: HomeStyleSpec) {
-    Text(
-        text = value,
-        color = OpenKalaColorTokens.TextHigh,
-        style = OpenKalaTypographyTokens.H5,
+    Box(
         modifier = Modifier
             .height(styleSpec.timerBadgeHeight)
             .widthIn(min = styleSpec.timerBadgeMinWidth)
             .clip(OpenKalaRadiusTokens.Medium)
-            .background(OpenKalaColorTokens.White)
-            .padding(horizontal = 8.dp, vertical = 6.dp),
-        textAlign = TextAlign.Center
-    )
-}
-
-@Composable
-private fun HomeBottomBar(styleSpec: HomeStyleSpec) {
-    val items = listOf(
-        Triple("خانه", Icons.Outlined.Home, true),
-        Triple("دسته‌بندی", Icons.Outlined.Category, false)
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(OpenKalaColorTokens.Surface)
-            .navigationBarsPadding()
-            .padding(top = styleSpec.bottomNavTopPadding, bottom = styleSpec.bottomNavBottomPadding),
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .background(OpenKalaColorTokens.White),
+        contentAlignment = Alignment.Center
     ) {
-        items.forEach { item ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = item.second,
-                    contentDescription = item.first,
-                    tint = if (item.third) OpenKalaColorTokens.TextPrimary else OpenKalaColorTokens.TextLow,
-                    modifier = Modifier.size(styleSpec.bottomNavIconSize)
-                )
-                Text(
-                    text = item.first,
-                    style = OpenKalaTypographyTokens.Subtitle,
-                    color = if (item.third) OpenKalaColorTokens.TextPrimary else OpenKalaColorTokens.TextMedium,
-                    fontSize = styleSpec.bottomNavTextSize
-                )
-            }
-        }
+        Text(
+            text = value,
+            color = OpenKalaColorTokens.TextHigh,
+            style = OpenKalaTypographyTokens.H5,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
     }
 }
 
