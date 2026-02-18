@@ -72,7 +72,10 @@ import com.openkala.app.ui.theme.TextPrimary
 import com.openkala.app.ui.theme.TextSecondary
 
 @Composable
-fun HomeScreenRoute(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreenRoute(
+    onProductClick: (IncredibleOfferItem) -> Unit = {},
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     when (state) {
         HomeUiState.Loading -> LoadingHomeScreen()
@@ -84,7 +87,8 @@ fun HomeScreenRoute(viewModel: HomeViewModel = hiltViewModel()) {
             data = (state as HomeUiState.Content).data,
             isRefreshing = (state as HomeUiState.Content).isRefreshing,
             styleSpec = PixelPerfectHomeStyle,
-            pixelPerfectMode = PixelPerfectMode.Enabled
+            pixelPerfectMode = PixelPerfectMode.Enabled,
+            onProductClick = onProductClick
         )
     }
 }
@@ -136,7 +140,8 @@ private fun HomeScreen(
     data: HomeScreenData,
     isRefreshing: Boolean,
     styleSpec: HomeStyleSpec,
-    pixelPerfectMode: Boolean
+    pixelPerfectMode: Boolean,
+    onProductClick: (IncredibleOfferItem) -> Unit
 ) {
     var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
 
@@ -201,7 +206,8 @@ private fun HomeScreen(
                 IncredibleSection(
                     items = data.incredibleOffers.items,
                     styleSpec = styleSpec,
-                    pixelPerfectMode = pixelPerfectMode
+                    pixelPerfectMode = pixelPerfectMode,
+                    onProductClick = onProductClick
                 )
             }
 
@@ -392,7 +398,8 @@ private fun ShortcutsRow(
 private fun IncredibleSection(
     items: List<IncredibleOfferItem>,
     styleSpec: HomeStyleSpec,
-    pixelPerfectMode: Boolean
+    pixelPerfectMode: Boolean,
+    onProductClick: (IncredibleOfferItem) -> Unit
 ) {
     val firstTimer = if (pixelPerfectMode) 31736L else (items.firstOrNull()?.timerSeconds ?: 0L)
     Column(
@@ -428,7 +435,9 @@ private fun IncredibleSection(
                 Column(
                     modifier = Modifier
                         .width(styleSpec.productCardWidth)
+                        .clip(OpenKalaRadiusTokens.Medium)
                         .background(OpenKalaColorTokens.Surface)
+                        .clickable { onProductClick(product) }
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
