@@ -7,7 +7,8 @@ data class HomeScreenData(
     val heroBanners: List<Banner>,
     val shortcuts: List<ShortcutItem>,
     val incredibleOffers: IncredibleSection,
-    val topBanners: List<Banner>
+    val topBanners: List<Banner>,
+    val freshIncredibleOffers: IncredibleSection
 )
 
 data class Banner(
@@ -46,6 +47,7 @@ data class IncredibleOfferItem(
     val title: String,
     val imageUrl: String,
     val price: Long?,
+    val originalPrice: Long?,
     val discountPercent: Int?,
     val timerSeconds: Long?
 )

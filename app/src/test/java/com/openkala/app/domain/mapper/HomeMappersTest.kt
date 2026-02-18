@@ -102,6 +102,47 @@ class HomeMappersTest {
         assertEquals("https://example.com/jet", result.superAppTabs.first().webUrl)
     }
 
+    @Test
+    fun mapHomeScreenData_parsesFreshIncredibleProducts() {
+        val home = homeJson(
+            """
+            "fresh_incredible_products": {
+              "title": "شگفت‌انگیز سوپرمارکتی",
+              "products": [
+                {
+                  "id": 301,
+                  "title_fa": "item-301",
+                  "images": {
+                    "main": {
+                      "webp_url": ["https://cdn.example/301.webp"],
+                      "url": ["https://cdn.example/301.jpg"]
+                    }
+                  },
+                  "default_variant": {
+                    "price": {
+                      "selling_price": 199000,
+                      "rrp_price": 259000,
+                      "discount_percent": 23,
+                      "timer": 4500
+                    }
+                  }
+                }
+              ]
+            }
+            """.trimIndent()
+        )
+
+        val result = mapHomeScreenData(home, pillarsJson())
+
+        assertEquals("شگفت‌انگیز سوپرمارکتی", result.freshIncredibleOffers.title)
+        assertEquals(1, result.freshIncredibleOffers.items.size)
+        assertEquals(301L, result.freshIncredibleOffers.items.first().id)
+        assertEquals(199000L, result.freshIncredibleOffers.items.first().price)
+        assertEquals(259000L, result.freshIncredibleOffers.items.first().originalPrice)
+        assertEquals(23, result.freshIncredibleOffers.items.first().discountPercent)
+        assertEquals(4500L, result.freshIncredibleOffers.items.first().timerSeconds)
+    }
+
     private fun homeJson(extraFields: String): JsonObject {
         return json.parseToJsonElement(
             """
@@ -110,6 +151,10 @@ class HomeMappersTest {
                 "header_banners": [],
                 "deep_links": [],
                 "incredible_products": {
+                  "title": "",
+                  "products": []
+                },
+                "fresh_incredible_products": {
                   "title": "",
                   "products": []
                 }

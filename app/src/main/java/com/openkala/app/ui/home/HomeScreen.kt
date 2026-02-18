@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -260,17 +261,19 @@ private fun HomeScreen(
                 item { ShortcutsRow(data, styleSpec) }
 
                 item {
-                    IncredibleSection(
-                        items = data.incredibleOffers.items,
-                        styleSpec = styleSpec,
-                        pixelPerfectMode = pixelPerfectMode,
-                        onProductClick = onProductClick
-                    )
-                }
-                item {
                     TopBannersSection(
                         banners = data.topBanners,
                         styleSpec = styleSpec
+                    )
+                }
+
+                item {
+                    FreshIncredibleSection(
+                        title = data.freshIncredibleOffers.title,
+                        items = data.freshIncredibleOffers.items,
+                        styleSpec = styleSpec,
+                        pixelPerfectMode = pixelPerfectMode,
+                        onProductClick = onProductClick
                     )
                 }
 
@@ -598,7 +601,11 @@ private fun IncredibleSection(
                 fontSize = styleSpec.incredibleHeaderTextSize,
                 fontWeight = FontWeight.W900
             )
-            TimerBadge(firstTimer, styleSpec)
+            TimerBadge(
+                totalSeconds = firstTimer,
+                badgeHeight = styleSpec.timerBadgeHeight,
+                badgeMinWidth = styleSpec.timerBadgeMinWidth
+            )
         }
 
         LazyRow(
@@ -658,7 +665,144 @@ private fun IncredibleSection(
 }
 
 @Composable
-private fun TimerBadge(totalSeconds: Long, styleSpec: HomeStyleSpec) {
+internal fun FreshIncredibleSection(
+    title: String,
+    items: List<IncredibleOfferItem>,
+    styleSpec: HomeStyleSpec,
+    pixelPerfectMode: Boolean,
+    onProductClick: (IncredibleOfferItem) -> Unit
+) {
+    if (items.isEmpty()) return
+
+    val firstTimer = if (pixelPerfectMode) 31736L else (items.firstOrNull()?.timerSeconds ?: 0L)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFF6FBE44))
+            .testTag("home_fresh_incredible_section")
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(styleSpec.freshHeaderHeight)
+                .padding(horizontal = styleSpec.freshHeaderHorizontalPadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier
+                    .clickable { /* UI-only in this iteration */ }
+                    .testTag("home_fresh_see_all"),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "همه",
+                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                    color = OpenKalaColorTokens.White
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "‹",
+                    style = OpenKalaTypographyTokens.H5,
+                    color = OpenKalaColorTokens.White
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            TimerBadge(
+                totalSeconds = firstTimer,
+                badgeHeight = styleSpec.freshTimerBadgeHeight,
+                badgeMinWidth = styleSpec.freshTimerBadgeMinWidth,
+                modifier = Modifier.testTag("home_fresh_timer")
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = title.ifBlank { "شگفت‌انگیز سوپرمارکتی" },
+                style = OpenKalaTypographyTokens.H5,
+                color = OpenKalaColorTokens.White,
+                fontWeight = FontWeight.W900,
+                fontSize = styleSpec.freshHeaderTitleSizeSp.sp
+            )
+        }
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = styleSpec.freshSectionBottomPadding)
+                .testTag("home_fresh_products_row"),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp)
+        ) {
+            items(items, key = { it.id }) { product ->
+                Column(
+                    modifier = Modifier
+                        .width(styleSpec.freshProductCardWidth)
+                        .clip(OpenKalaRadiusTokens.Medium)
+                        .background(OpenKalaColorTokens.Surface)
+                        .clickable { onProductClick(product) }
+                        .padding(8.dp)
+                        .testTag("home_fresh_product_card"),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = product.imageUrl,
+                        contentDescription = product.title,
+                        modifier = Modifier.size(styleSpec.freshProductImageSize),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = product.title,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = OpenKalaTypographyTokens.Body2,
+                        color = OpenKalaColorTokens.TextPrimary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    product.originalPrice?.let { original ->
+                        Text(
+                            text = original.toString().toPersianDigits(),
+                            style = OpenKalaTypographyTokens.Caption,
+                            color = OpenKalaColorTokens.TextLow,
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        product.discountPercent?.let {
+                            Text(
+                                text = "${it.toString().toPersianDigits()}%",
+                                color = OpenKalaColorTokens.White,
+                                style = OpenKalaTypographyTokens.CaptionStrong,
+                                modifier = Modifier
+                                    .clip(OpenKalaRadiusTokens.Medium)
+                                    .background(OpenKalaColorTokens.BrandPrimary)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                        Text(
+                            text = product.price?.toString()?.toPersianDigits().orEmpty(),
+                            style = OpenKalaTypographyTokens.Body2Strong
+                        )
+                    }
+                    Text(
+                        text = "تومان",
+                        style = OpenKalaTypographyTokens.Caption,
+                        color = OpenKalaColorTokens.TextMedium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimerBadge(
+    totalSeconds: Long,
+    badgeHeight: androidx.compose.ui.unit.Dp,
+    badgeMinWidth: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
     val initial = totalSeconds.coerceAtLeast(0)
     var remaining by remember(initial) { mutableStateOf(initial) }
 
@@ -673,19 +817,26 @@ private fun TimerBadge(totalSeconds: Long, styleSpec: HomeStyleSpec) {
     val hours = (remaining / 3600).coerceAtLeast(0)
     val minutes = ((remaining % 3600) / 60).coerceAtLeast(0)
     val seconds = (remaining % 60).coerceAtLeast(0)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        TimePart(seconds.toString().padStart(2, '0').toPersianDigits(), styleSpec)
-        TimePart(minutes.toString().padStart(2, '0').toPersianDigits(), styleSpec)
-        TimePart(hours.toString().padStart(2, '0').toPersianDigits(), styleSpec)
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        TimePart(seconds.toString().padStart(2, '0').toPersianDigits(), badgeHeight, badgeMinWidth)
+        TimePart(minutes.toString().padStart(2, '0').toPersianDigits(), badgeHeight, badgeMinWidth)
+        TimePart(hours.toString().padStart(2, '0').toPersianDigits(), badgeHeight, badgeMinWidth)
     }
 }
 
 @Composable
-private fun TimePart(value: String, styleSpec: HomeStyleSpec) {
+private fun TimePart(
+    value: String,
+    badgeHeight: androidx.compose.ui.unit.Dp,
+    badgeMinWidth: androidx.compose.ui.unit.Dp
+) {
     Box(
         modifier = Modifier
-            .height(styleSpec.timerBadgeHeight)
-            .widthIn(min = styleSpec.timerBadgeMinWidth)
+            .height(badgeHeight)
+            .widthIn(min = badgeMinWidth)
             .clip(OpenKalaRadiusTokens.Medium)
             .background(OpenKalaColorTokens.White),
         contentAlignment = Alignment.Center

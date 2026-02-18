@@ -35,6 +35,7 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
 
     val incredibleSection = homeData.objectAt("incredible_products").toIncredibleSection()
     val topBanners = homeData.arrayAt("top_banners").mapNotNull { it.toBanner() }
+    val freshIncredibleSection = homeData.objectAt("fresh_incredible_products").toIncredibleSection()
 
     return HomeScreenData(
         topStripBanner = topStrip,
@@ -43,7 +44,8 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
         heroBanners = heroBanners,
         shortcuts = shortcuts,
         incredibleOffers = incredibleSection,
-        topBanners = topBanners
+        topBanners = topBanners,
+        freshIncredibleOffers = freshIncredibleSection
     )
 }
 
@@ -94,6 +96,7 @@ private fun JsonObject.toIncredibleSection(): IncredibleSection {
                     obj.objectAt("images").objectAt("main").arrayAt("url").firstString()
                 },
             price = priceObj.longAtOrNull("selling_price"),
+            originalPrice = priceObj.longAtOrNull("rrp_price"),
             discountPercent = priceObj.intAtOrNull("discount_percent"),
             timerSeconds = priceObj.longAtOrNull("timer")
         )
