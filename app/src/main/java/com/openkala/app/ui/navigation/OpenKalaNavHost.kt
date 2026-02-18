@@ -153,7 +153,17 @@ fun OpenKalaNavHost() {
                 }
 
                 composable(route = CATEGORIES_ROUTE) {
-                    CategoriesScreenRoute()
+                    CategoriesScreenRoute(
+                        onSearchClick = { navController.navigate(SEARCH_ENTRY_ROUTE) },
+                        onBackClick = {
+                            navController.navigate(HOME_ROUTE) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this
+                    )
                 }
 
                 composable(

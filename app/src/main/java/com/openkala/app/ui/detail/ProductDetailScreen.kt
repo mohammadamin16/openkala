@@ -40,8 +40,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,6 +66,7 @@ import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import kotlinx.coroutines.delay
 
 @Composable
 fun ProductDetailScreenRoute(
@@ -322,11 +326,7 @@ private fun OfferCard(
                 color = OpenKalaColorTokens.BrandPrimary
             )
             selectedVariant?.timerSeconds?.let {
-                Text(
-                    text = it.toTimerText(),
-                    style = OpenKalaTypographyTokens.SubtitleStrong,
-                    color = OpenKalaColorTokens.BrandPrimary
-                )
+                CountdownTimerText(totalSeconds = it)
             }
         }
 
@@ -407,6 +407,26 @@ private fun OfferCard(
             }
         }
     }
+}
+
+@Composable
+private fun CountdownTimerText(totalSeconds: Long) {
+    val initial = totalSeconds.coerceAtLeast(0L)
+    var remaining by remember(initial) { mutableStateOf(initial) }
+
+    LaunchedEffect(initial) {
+        remaining = initial
+        while (remaining > 0L) {
+            delay(1000)
+            remaining -= 1L
+        }
+    }
+
+    Text(
+        text = remaining.toTimerText(),
+        style = OpenKalaTypographyTokens.SubtitleStrong,
+        color = OpenKalaColorTokens.BrandPrimary
+    )
 }
 
 @Composable

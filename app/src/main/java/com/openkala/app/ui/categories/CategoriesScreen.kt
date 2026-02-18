@@ -1,7 +1,10 @@
 package com.openkala.app.ui.categories
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -30,7 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Checkroom
@@ -42,9 +45,8 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Laptop
+import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PhoneAndroid
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material.icons.outlined.TwoWheeler
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -76,12 +78,18 @@ import coil.compose.AsyncImage
 import com.openkala.app.domain.model.CategoryLeafItem
 import com.openkala.app.domain.model.CategorySection
 import com.openkala.app.domain.model.CategoryTabItem
+import com.openkala.app.ui.search.SharedSearchBar
 import com.openkala.app.ui.theme.OpenKalaColorTokens
 import com.openkala.app.ui.theme.OpenKalaRadiusTokens
 import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CategoriesScreenRoute(
+    onSearchClick: () -> Unit,
+    onBackClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -98,18 +106,27 @@ fun CategoriesScreenRoute(
         state = state,
         snackbarHostState = snackbarHostState,
         onRetry = viewModel::refresh,
+        onSearchClick = onSearchClick,
+        onBackClick = onBackClick,
         onTabSelected = viewModel::onTabSelected,
-        onSectionToggle = viewModel::onSectionToggle
+        onSectionToggle = viewModel::onSectionToggle,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CategoriesScreen(
     state: CategoriesUiState,
     snackbarHostState: SnackbarHostState,
     onRetry: () -> Unit,
+    onSearchClick: () -> Unit,
+    onBackClick: () -> Unit,
     onTabSelected: (Long) -> Unit,
-    onSectionToggle: (Long) -> Unit
+    onSectionToggle: (Long) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0),
@@ -129,20 +146,29 @@ private fun CategoriesScreen(
 
             is CategoriesUiState.Content -> CategoriesContent(
                 state = state,
+                onSearchClick = onSearchClick,
+                onBackClick = onBackClick,
                 onTabSelected = onTabSelected,
                 onSectionToggle = onSectionToggle,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
             )
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CategoriesContent(
     state: CategoriesUiState.Content,
+    onSearchClick: () -> Unit,
+    onBackClick: () -> Unit,
     onTabSelected: (Long) -> Unit,
     onSectionToggle: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val selectedTab = state.data.tabs.firstOrNull { it.id == state.selectedTabId }
     val sections = state.data.sectionsByTabId[state.selectedTabId].orEmpty()
@@ -154,7 +180,12 @@ private fun CategoriesContent(
             .background(OpenKalaColorTokens.AppBackground)
             .statusBarsPadding()
     ) {
-        CategoriesTopSearchBar()
+        CategoriesTopSearchBar(
+            onSearchClick = onSearchClick,
+            onBackClick = onBackClick,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
 
         AnimatedVisibility(visible = state.isRefreshing) {
             LinearProgressIndicator(
@@ -196,7 +227,7 @@ private fun CategoriesContent(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = null,
                         tint = OpenKalaColorTokens.TextMedium,
                         modifier = Modifier.size(20.dp)
@@ -233,8 +264,14 @@ private fun CategoriesContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun CategoriesTopSearchBar() {
+private fun CategoriesTopSearchBar(
+    onSearchClick: () -> Unit,
+    onBackClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -243,42 +280,38 @@ private fun CategoriesTopSearchBar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
             contentDescription = null,
             tint = OpenKalaColorTokens.TextHigh,
-            modifier = Modifier.size(34.dp)
+            modifier = Modifier
+                .size(28.dp)
+                .clickable(onClick = onBackClick)
         )
 
-        Row(
+        SharedSearchBar(
+            query = "",
+            placeholder = "جستجو در همه کالاها",
+            onQueryChange = {},
+            readOnly = true,
+            onClick = onSearchClick,
+            modifier = Modifier.weight(1f),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
+
+        Box(
             modifier = Modifier
-                .weight(1f)
-                .height(52.dp)
-                .clip(OpenKalaRadiusTokens.Pill)
-                .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Pill)
+                .size(52.dp)
+                .clip(CircleShape)
                 .background(OpenKalaColorTokens.SurfaceMuted)
-                .padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .border(1.dp, OpenKalaColorTokens.Border, CircleShape),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Outlined.Search,
-                contentDescription = null,
+                imageVector = Icons.Outlined.NotificationsNone,
+                contentDescription = "Notification",
                 tint = OpenKalaColorTokens.TextLow,
                 modifier = Modifier.size(28.dp)
-            )
-            Text(
-                text = "جستجو در دیجی‌کالا",
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.TextLow,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = Icons.Outlined.Storefront,
-                contentDescription = null,
-                tint = Color(0xFF7A4BE3),
-                modifier = Modifier.size(24.dp)
             )
         }
     }
