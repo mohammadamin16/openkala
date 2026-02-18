@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,7 +31,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -146,24 +147,12 @@ private fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .background(OpenKalaColorTokens.AppBackground)
                 .padding(padding)
                 .testTag("home_list"),
             contentPadding = PaddingValues(bottom = 10.dp)
         ) {
-            item {
-                data.topStripBanner?.let {
-                    AsyncImage(
-                        model = it.imageUrl,
-                        contentDescription = it.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(styleSpec.topStripHeight)
-                            .background(Color(0xFFB39E71))
-                    )
-                }
-            }
-
             item {
                 TopTabsRow(
                     tabs = data.superAppTabs,
@@ -177,10 +166,6 @@ private fun HomeScreen(
 
             item {
                 SearchAndLocationSection(styleSpec)
-            }
-
-            item {
-                PlusMockBanner(styleSpec)
             }
 
             item {
@@ -201,8 +186,10 @@ private fun HomeScreen(
                             contentDescription = banner.title,
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .height(styleSpec.heroSectionHeight - 20.dp)
                                 .padding(horizontal = styleSpec.heroHorizontalPadding)
-                                .clip(OpenKalaRadiusTokens.Large)
+                                .clip(OpenKalaRadiusTokens.Large),
+                            contentScale = ContentScale.Crop
                         )
                     }
                 }
@@ -262,7 +249,7 @@ private fun TopTabsRow(
                     .background(if (selected) colorFromHex(tab.backgroundColorHex) else OpenKalaColorTokens.SurfaceMuted)
                     .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
                     .clickable { onTabClick(tab) }
-                    .padding(horizontal = 8.dp, vertical = 10.dp),
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -350,67 +337,6 @@ private fun SearchAndLocationSection(styleSpec: HomeStyleSpec) {
                     modifier = Modifier.size(28.dp)
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.LocationOn,
-                contentDescription = null,
-                tint = OpenKalaColorTokens.TextPrimary,
-                modifier = Modifier.size(19.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "تحویل به استان تهران، شهر تهران",
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.TextPrimary,
-                fontSize = styleSpec.locationTextSize
-            )
-        }
-    }
-}
-
-@Composable
-private fun PlusMockBanner(styleSpec: HomeStyleSpec) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(OpenKalaColorTokens.Plus500)
-            .padding(
-                horizontal = styleSpec.plusBarHorizontalPadding,
-                vertical = styleSpec.plusBarVerticalPadding
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "✕",
-            style = OpenKalaTypographyTokens.H5,
-            color = OpenKalaColorTokens.White
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "تمدید",
-                modifier = Modifier
-                    .height(styleSpec.plusButtonHeight)
-                    .clip(OpenKalaRadiusTokens.Pill)
-                    .background(OpenKalaColorTokens.White)
-                    .padding(horizontal = 18.dp, vertical = 6.dp),
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.Plus500
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "اشتراک پلاس شما تمام شده",
-                style = OpenKalaTypographyTokens.H5,
-                color = OpenKalaColorTokens.White,
-                fontSize = styleSpec.plusTitleSize
-            )
         }
     }
 }

@@ -10,9 +10,9 @@ object PixelPerfectMode {
 
 data class HomeStyleSpec(
     val topStripHeight: Dp = 68.dp,
-    val tabCardWidth: Dp = 92.dp,
-    val tabCardHeight: Dp = 132.dp,
-    val tabIconSize: Dp = 34.dp,
+    val tabCardWidth: Dp = 90.dp,
+    val tabCardHeight: Dp = 92.dp,
+    val tabIconSize: Dp = 32.dp,
     val tabRowHorizontalPadding: Dp = 10.dp,
     val tabRowTopPadding: Dp = 8.dp,
 
@@ -29,7 +29,7 @@ data class HomeStyleSpec(
     val plusButtonHeight: Dp = 34.dp,
     val plusTitleSizeSp: Int = 18,
 
-    val heroSectionHeight: Dp = 220.dp,
+    val heroSectionHeight: Dp = 140.dp,
     val heroCardRadius: Dp = 16.dp,
     val heroHorizontalPadding: Dp = 14.dp,
 
@@ -57,4 +57,3 @@ val HomeStyleSpec.locationTextSize get() = locationTextSizeSp.sp
 val HomeStyleSpec.plusTitleSize get() = plusTitleSizeSp.sp
 val HomeStyleSpec.incredibleHeaderTextSize get() = incredibleHeaderTextSizeSp.sp
 val HomeStyleSpec.bottomNavTextSize get() = bottomNavTextSizeSp.sp
-
