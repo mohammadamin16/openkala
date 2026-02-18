@@ -1,8 +1,61 @@
+import java.util.Properties
+import org.gradle.api.GradleException
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
+}
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val releaseTasksRequested = gradle.startParameter.taskNames.any { task ->
+    val normalized = task.lowercase()
+    normalized.contains("release") || normalized.contains("signingreport")
+}
+
+fun requiredEnv(name: String): String {
+    return System.getenv(name)?.takeIf { it.isNotBlank() }
+        ?: throw GradleException("Missing required environment variable: $name")
+}
+
+fun requiredLocalProperty(name: String): String {
+    return localProperties.getProperty(name)?.takeIf { it.isNotBlank() }
+        ?: throw GradleException("Missing required local.properties entry: $name")
+}
+
+data class ReleaseSigningInputs(
+    val storeFilePath: String,
+    val storePassword: String,
+    val keyAlias: String,
+    val keyPassword: String
+)
+
+val releaseSigningInputs: ReleaseSigningInputs? = if (releaseTasksRequested) {
+    val storeFilePath = requiredLocalProperty("RELEASE_STORE_FILE")
+    val storePassword = requiredEnv("OPENKALA_STORE_PASSWORD")
+    val keyAlias = requiredEnv("OPENKALA_KEY_ALIAS")
+    val keyPassword = requiredEnv("OPENKALA_KEY_PASSWORD")
+
+    val storeFile = file(storeFilePath)
+    if (!storeFile.exists()) {
+        throw GradleException("Keystore file not found at RELEASE_STORE_FILE: $storeFilePath")
+    }
+
+    ReleaseSigningInputs(
+        storeFilePath = storeFilePath,
+        storePassword = storePassword,
+        keyAlias = keyAlias,
+        keyPassword = keyPassword
+    )
+} else {
+    null
 }
 
 android {
@@ -22,9 +75,23 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            if (releaseTasksRequested) {
+                storeFile = file(releaseSigningInputs!!.storeFilePath)
+                storePassword = releaseSigningInputs.storePassword
+                keyAlias = releaseSigningInputs.keyAlias
+                keyPassword = releaseSigningInputs.keyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (releaseTasksRequested) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

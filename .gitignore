@@ -5,5 +5,5 @@
 /.kotlin
 /build
 /captures
+/openkala-release.jks
 **/build
-
