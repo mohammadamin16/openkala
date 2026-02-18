@@ -249,7 +249,7 @@ private fun TopTabsRow(
                     .background(if (selected) colorFromHex(tab.backgroundColorHex) else OpenKalaColorTokens.SurfaceMuted)
                     .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
                     .clickable { onTabClick(tab) }
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
