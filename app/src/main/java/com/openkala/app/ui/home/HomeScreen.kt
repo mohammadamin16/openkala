@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -26,10 +27,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -39,7 +40,6 @@ import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,9 +64,9 @@ import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.SuperAppTab
 import com.openkala.app.ui.theme.DigikalaRed
-import com.openkala.app.ui.theme.LightGraySurface
-import com.openkala.app.ui.theme.PlusPurple
-import com.openkala.app.ui.theme.SearchBorder
+import com.openkala.app.ui.theme.OpenKalaColorTokens
+import com.openkala.app.ui.theme.OpenKalaRadiusTokens
+import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 import com.openkala.app.ui.theme.TextPrimary
 import com.openkala.app.ui.theme.TextSecondary
 
@@ -81,7 +81,9 @@ fun HomeScreenRoute(viewModel: HomeViewModel = hiltViewModel()) {
         )
         is HomeUiState.Content -> HomeScreen(
             data = (state as HomeUiState.Content).data,
-            isRefreshing = (state as HomeUiState.Content).isRefreshing
+            isRefreshing = (state as HomeUiState.Content).isRefreshing,
+            styleSpec = PixelPerfectHomeStyle,
+            pixelPerfectMode = PixelPerfectMode.Enabled
         )
     }
 }
@@ -108,12 +110,21 @@ private fun ErrorHomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "خطا در دریافت اطلاعات")
+        Text(
+            text = "خطا در دریافت اطلاعات",
+            style = OpenKalaTypographyTokens.SubtitleStrong,
+            color = TextPrimary
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = message, color = TextSecondary, textAlign = TextAlign.Center)
+        Text(
+            text = message,
+            style = OpenKalaTypographyTokens.Body1,
+            color = TextSecondary,
+            textAlign = TextAlign.Center
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text("تلاش مجدد")
+            Text("تلاش مجدد", style = OpenKalaTypographyTokens.Button2)
         }
     }
 }
@@ -122,20 +133,20 @@ private fun ErrorHomeScreen(
 @Composable
 private fun HomeScreen(
     data: HomeScreenData,
-    isRefreshing: Boolean
+    isRefreshing: Boolean,
+    styleSpec: HomeStyleSpec,
+    pixelPerfectMode: Boolean
 ) {
-    var selectedTab by remember(data.selectedTabName) {
-        mutableStateOf(data.selectedTabName)
-    }
+    var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
-        bottomBar = { HomeBottomBar() }
+        bottomBar = { HomeBottomBar(styleSpec) }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(LightGraySurface)
+                .background(OpenKalaColorTokens.AppBackground)
                 .padding(padding)
                 .testTag("home_list"),
             contentPadding = PaddingValues(bottom = 10.dp)
@@ -147,7 +158,7 @@ private fun HomeScreen(
                         contentDescription = it.title,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(70.dp)
+                            .height(styleSpec.topStripHeight)
                             .background(Color(0xFFB39E71))
                     )
                 }
@@ -157,55 +168,57 @@ private fun HomeScreen(
                 TopTabsRow(
                     tabs = data.superAppTabs,
                     selectedTab = selectedTab,
+                    styleSpec = styleSpec,
                     onTabClick = { tab ->
-                        if (tab.name == "digikala") {
-                            selectedTab = tab.name
-                        }
+                        if (tab.name == "digikala") selectedTab = tab.name
                     }
                 )
             }
 
             item {
-                SearchAndLocationSection()
+                SearchAndLocationSection(styleSpec)
             }
 
             item {
-                PlusMockBanner()
+                PlusMockBanner(styleSpec)
             }
 
             item {
-                val pagerState = rememberPagerState(pageCount = { data.heroBanners.size.coerceAtLeast(1) })
+                val banners = data.heroBanners
+                val pagerState = rememberPagerState(pageCount = { banners.size.coerceAtLeast(1) })
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(210.dp)
-                        .background(Color.White)
+                        .height(styleSpec.heroSectionHeight)
+                        .background(OpenKalaColorTokens.Surface)
                         .padding(vertical = 10.dp)
                 ) { page ->
-                    val banner = data.heroBanners.getOrNull(page)
+                    val banner = banners.getOrNull(page)
                     if (banner != null) {
                         AsyncImage(
                             model = banner.imageUrl,
                             contentDescription = banner.title,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 14.dp)
-                                .clip(RoundedCornerShape(16.dp))
+                                .padding(horizontal = styleSpec.heroHorizontalPadding)
+                                .clip(OpenKalaRadiusTokens.Large)
                         )
                     }
                 }
             }
 
-            item {
-                ShortcutsRow(data = data)
-            }
+            item { ShortcutsRow(data, styleSpec) }
 
             item {
-                IncredibleSection(data.incredibleOffers.items)
+                IncredibleSection(
+                    items = data.incredibleOffers.items,
+                    styleSpec = styleSpec,
+                    pixelPerfectMode = pixelPerfectMode
+                )
             }
 
-            if (isRefreshing) {
+            if (isRefreshing && !pixelPerfectMode) {
                 item {
                     Row(
                         modifier = Modifier
@@ -215,8 +228,8 @@ private fun HomeScreen(
                     ) {
                         Text(
                             text = "در حال به‌روزرسانی...",
-                            color = TextSecondary,
-                            fontSize = 12.sp
+                            style = OpenKalaTypographyTokens.Caption,
+                            color = OpenKalaColorTokens.TextLow
                         )
                     }
                 }
@@ -229,41 +242,39 @@ private fun HomeScreen(
 private fun TopTabsRow(
     tabs: List<SuperAppTab>,
     selectedTab: String,
+    styleSpec: HomeStyleSpec,
     onTabClick: (SuperAppTab) -> Unit
 ) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFEDEDED))
-            .padding(top = 10.dp, bottom = 6.dp),
+            .background(OpenKalaColorTokens.AppBackground)
+            .padding(top = styleSpec.tabRowTopPadding, bottom = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 10.dp)
+        contentPadding = PaddingValues(horizontal = styleSpec.tabRowHorizontalPadding)
     ) {
         items(tabs, key = { it.name }) { tab ->
             val selected = tab.name == selectedTab
             Column(
                 modifier = Modifier
-                    .size(width = 90.dp, height = 92.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(
-                        if (selected) colorFromHex(tab.backgroundColorHex) else Color(0xFFF6F6F6)
-                    )
-                    .border(1.dp, Color(0xFFE2E2E2), RoundedCornerShape(14.dp))
+                    .size(width = styleSpec.tabCardWidth, height = styleSpec.tabCardHeight)
+                    .clip(OpenKalaRadiusTokens.Large)
+                    .background(if (selected) colorFromHex(tab.backgroundColorHex) else OpenKalaColorTokens.SurfaceMuted)
+                    .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
                     .clickable { onTabClick(tab) }
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 AsyncImage(
                     model = tab.iconUrl,
                     contentDescription = tab.title,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(styleSpec.tabIconSize)
                 )
                 Text(
                     text = tab.title,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (selected) colorFromHex(tab.focusedTextColorHex) else TextPrimary,
+                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                    color = if (selected) colorFromHex(tab.focusedTextColorHex) else OpenKalaColorTokens.TextPrimary,
                     maxLines = 1
                 )
             }
@@ -272,133 +283,164 @@ private fun TopTabsRow(
 }
 
 @Composable
-private fun SearchAndLocationSection() {
+private fun SearchAndLocationSection(styleSpec: HomeStyleSpec) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFEDEDED))
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .background(OpenKalaColorTokens.AppBackground)
+            .padding(
+                horizontal = styleSpec.searchSectionHorizontalPadding,
+                vertical = styleSpec.searchSectionVerticalPadding
+            )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFF4F4F4))
-                    .border(1.dp, SearchBorder, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.NotificationsNone,
-                    contentDescription = "Notification",
-                    tint = TextSecondary,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(Color(0xFFF4F4F4))
-                    .border(1.dp, SearchBorder, RoundedCornerShape(28.dp))
+                    .height(styleSpec.searchBarHeight)
+                    .clip(OpenKalaRadiusTokens.Pill)
+                    .background(OpenKalaColorTokens.SurfaceMuted)
+                    .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Pill)
                     .padding(horizontal = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     contentDescription = null,
-                    tint = Color(0xFF9E9E9E),
-                    modifier = Modifier.size(28.dp)
+                    tint = OpenKalaColorTokens.TextLow,
+                    modifier = Modifier.size(styleSpec.searchIconSize)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Outlined.Storefront,
+                    contentDescription = null,
+                    tint = Color(0xFF7A4BE3),
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "جستجو در ",
-                    color = Color(0xFF9E9E9E),
-                    fontSize = 16.sp
+                    style = OpenKalaTypographyTokens.Subtitle,
+                    color = OpenKalaColorTokens.TextLow,
+                    fontSize = styleSpec.searchFontSize
                 )
                 Text(
                     text = "دیجی‌کالا",
-                    color = DigikalaRed,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                    color = OpenKalaColorTokens.BrandPrimary,
+                    fontSize = styleSpec.searchFontSize
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(styleSpec.notificationBubbleSize)
+                    .clip(CircleShape)
+                    .background(OpenKalaColorTokens.SurfaceMuted)
+                    .border(1.dp, OpenKalaColorTokens.Border, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.NotificationsNone,
+                    contentDescription = "Notification",
+                    tint = OpenKalaColorTokens.TextLow,
+                    modifier = Modifier.size(28.dp)
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Icon(
+                imageVector = Icons.Outlined.LocationOn,
+                contentDescription = null,
+                tint = OpenKalaColorTokens.TextPrimary,
+                modifier = Modifier.size(19.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "تحویل به استان تهران، شهر تهران",
-                color = TextPrimary,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
+                style = OpenKalaTypographyTokens.SubtitleStrong,
+                color = OpenKalaColorTokens.TextPrimary,
+                fontSize = styleSpec.locationTextSize
             )
         }
     }
 }
 
 @Composable
-private fun PlusMockBanner() {
+private fun PlusMockBanner(styleSpec: HomeStyleSpec) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PlusPurple)
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .background(OpenKalaColorTokens.Plus500)
+            .padding(
+                horizontal = styleSpec.plusBarHorizontalPadding,
+                vertical = styleSpec.plusBarVerticalPadding
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "✕",
-            color = Color.White,
-            fontSize = 20.sp
+            style = OpenKalaTypographyTokens.H5,
+            color = OpenKalaColorTokens.White
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "تمدید",
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(Color.White)
-                    .padding(horizontal = 18.dp, vertical = 4.dp),
-                color = PlusPurple,
-                fontWeight = FontWeight.Bold
+                    .height(styleSpec.plusButtonHeight)
+                    .clip(OpenKalaRadiusTokens.Pill)
+                    .background(OpenKalaColorTokens.White)
+                    .padding(horizontal = 18.dp, vertical = 6.dp),
+                style = OpenKalaTypographyTokens.SubtitleStrong,
+                color = OpenKalaColorTokens.Plus500
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = "اشتراک پلاس شما تمام شده",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                style = OpenKalaTypographyTokens.H5,
+                color = OpenKalaColorTokens.White,
+                fontSize = styleSpec.plusTitleSize
             )
         }
     }
 }
 
 @Composable
-private fun ShortcutsRow(data: HomeScreenData) {
+private fun ShortcutsRow(
+    data: HomeScreenData,
+    styleSpec: HomeStyleSpec
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(OpenKalaColorTokens.Surface)
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+            .padding(
+                horizontal = styleSpec.shortcutRowHorizontalPadding,
+                vertical = styleSpec.shortcutRowVerticalPadding
+            ),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         data.shortcuts.forEach { item ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(90.dp)
+                modifier = Modifier.width(styleSpec.shortcutLabelWidth)
             ) {
                 AsyncImage(
                     model = item.iconUrl,
                     contentDescription = item.title,
                     modifier = Modifier
-                        .size(62.dp)
+                        .size(styleSpec.shortcutIconSize)
                         .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -407,8 +449,8 @@ private fun ShortcutsRow(data: HomeScreenData) {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF3A3A62),
-                    fontWeight = FontWeight.SemiBold
+                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                    color = OpenKalaColorTokens.TextHigh
                 )
             }
         }
@@ -416,8 +458,12 @@ private fun ShortcutsRow(data: HomeScreenData) {
 }
 
 @Composable
-private fun IncredibleSection(items: List<IncredibleOfferItem>) {
-    val firstTimer = items.firstOrNull()?.timerSeconds ?: 0L
+private fun IncredibleSection(
+    items: List<IncredibleOfferItem>,
+    styleSpec: HomeStyleSpec,
+    pixelPerfectMode: Boolean
+) {
+    val firstTimer = if (pixelPerfectMode) 31736L else (items.firstOrNull()?.timerSeconds ?: 0L)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -432,12 +478,14 @@ private fun IncredibleSection(items: List<IncredibleOfferItem>) {
         ) {
             Text(
                 text = "شگفت‌انگیز",
-                color = Color.White,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.ExtraBold
+                style = OpenKalaTypographyTokens.H5,
+                color = OpenKalaColorTokens.White,
+                fontSize = styleSpec.incredibleHeaderTextSize,
+                fontWeight = FontWeight.W900
             )
-            TimerBadge(firstTimer)
+            TimerBadge(firstTimer, styleSpec)
         }
+
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -448,22 +496,22 @@ private fun IncredibleSection(items: List<IncredibleOfferItem>) {
             items(items, key = { it.id }) { product ->
                 Column(
                     modifier = Modifier
-                        .width(160.dp)
-                        .background(Color.White)
+                        .width(styleSpec.productCardWidth)
+                        .background(OpenKalaColorTokens.Surface)
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AsyncImage(
                         model = product.imageUrl,
                         contentDescription = product.title,
-                        modifier = Modifier.size(120.dp)
+                        modifier = Modifier.size(styleSpec.productImageSize)
                     )
                     Text(
                         text = product.title,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = 12.sp,
-                        color = TextPrimary
+                        style = OpenKalaTypographyTokens.Body2,
+                        color = OpenKalaColorTokens.TextPrimary
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Row(
@@ -472,19 +520,18 @@ private fun IncredibleSection(items: List<IncredibleOfferItem>) {
                     ) {
                         product.discountPercent?.let {
                             Text(
-                                text = "$it%",
-                                color = Color.White,
+                                text = "${it.toString().toPersianDigits()}%",
+                                color = OpenKalaColorTokens.White,
+                                style = OpenKalaTypographyTokens.CaptionStrong,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(DigikalaRed)
-                                    .padding(horizontal = 6.dp, vertical = 2.dp),
-                                fontSize = 11.sp
+                                    .clip(OpenKalaRadiusTokens.Medium)
+                                    .background(OpenKalaColorTokens.BrandPrimary)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
                         Text(
-                            text = product.price?.toString().orEmpty(),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
+                            text = product.price?.toString()?.toPersianDigits().orEmpty(),
+                            style = OpenKalaTypographyTokens.Body2Strong
                         )
                     }
                 }
@@ -494,33 +541,35 @@ private fun IncredibleSection(items: List<IncredibleOfferItem>) {
 }
 
 @Composable
-private fun TimerBadge(totalSeconds: Long) {
+private fun TimerBadge(totalSeconds: Long, styleSpec: HomeStyleSpec) {
     val hours = (totalSeconds / 3600).coerceAtLeast(0)
     val minutes = ((totalSeconds % 3600) / 60).coerceAtLeast(0)
     val seconds = (totalSeconds % 60).coerceAtLeast(0)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        TimePart(seconds.toString().padStart(2, '0'))
-        TimePart(minutes.toString().padStart(2, '0'))
-        TimePart(hours.toString().padStart(2, '0'))
+        TimePart(seconds.toString().padStart(2, '0').toPersianDigits(), styleSpec)
+        TimePart(minutes.toString().padStart(2, '0').toPersianDigits(), styleSpec)
+        TimePart(hours.toString().padStart(2, '0').toPersianDigits(), styleSpec)
     }
 }
 
 @Composable
-private fun TimePart(value: String) {
+private fun TimePart(value: String, styleSpec: HomeStyleSpec) {
     Text(
         text = value,
-        color = Color(0xFF2D2D56),
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
+        color = OpenKalaColorTokens.TextHigh,
+        style = OpenKalaTypographyTokens.H5,
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color.White)
-            .padding(horizontal = 10.dp, vertical = 2.dp)
+            .height(styleSpec.timerBadgeHeight)
+            .widthIn(min = styleSpec.timerBadgeMinWidth)
+            .clip(OpenKalaRadiusTokens.Medium)
+            .background(OpenKalaColorTokens.White)
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        textAlign = TextAlign.Center
     )
 }
 
 @Composable
-private fun HomeBottomBar() {
+private fun HomeBottomBar(styleSpec: HomeStyleSpec) {
     val items = listOf(
         Triple("دیجی‌کالای من", Icons.Outlined.PersonOutline, false),
         Triple("مگنت", Icons.Outlined.PlayArrow, false),
@@ -531,8 +580,8 @@ private fun HomeBottomBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
-            .padding(top = 6.dp, bottom = 14.dp),
+            .background(OpenKalaColorTokens.Surface)
+            .padding(top = styleSpec.bottomNavTopPadding, bottom = styleSpec.bottomNavBottomPadding),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.forEach { item ->
@@ -540,13 +589,14 @@ private fun HomeBottomBar() {
                 Icon(
                     imageVector = item.second,
                     contentDescription = item.first,
-                    tint = if (item.third) TextPrimary else Color(0xFF9EA0A8),
-                    modifier = Modifier.size(30.dp)
+                    tint = if (item.third) OpenKalaColorTokens.TextPrimary else OpenKalaColorTokens.TextLow,
+                    modifier = Modifier.size(styleSpec.bottomNavIconSize)
                 )
                 Text(
                     text = item.first,
-                    color = if (item.third) TextPrimary else Color(0xFF7A7D86),
-                    fontSize = 15.sp
+                    style = OpenKalaTypographyTokens.Subtitle,
+                    color = if (item.third) OpenKalaColorTokens.TextPrimary else OpenKalaColorTokens.TextMedium,
+                    fontSize = styleSpec.bottomNavTextSize
                 )
             }
         }
@@ -555,4 +605,17 @@ private fun HomeBottomBar() {
 
 private fun colorFromHex(value: String): Color {
     return runCatching { Color(parseColor(value)) }.getOrDefault(Color.White)
+}
+
+private fun String.toPersianDigits(): String {
+    val map = charArrayOf('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹')
+    val builder = StringBuilder(length)
+    forEach { ch ->
+        if (ch in '0'..'9') {
+            builder.append(map[ch - '0'])
+        } else {
+            builder.append(ch)
+        }
+    }
+    return builder.toString()
 }
