@@ -12,7 +12,7 @@ data class HomeStyleSpec(
     val topStripHeight: Dp = 68.dp,
     val tabCardWidth: Dp = 90.dp,
     val tabCardHeight: Dp = 92.dp,
-    val tabIconSize: Dp = 32.dp,
+    val tabIconSize: Dp = 38.dp,
     val tabRowHorizontalPadding: Dp = 10.dp,
     val tabRowTopPadding: Dp = 8.dp,
 

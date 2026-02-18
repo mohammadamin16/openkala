@@ -249,20 +249,25 @@ private fun TopTabsRow(
                     .background(if (selected) colorFromHex(tab.backgroundColorHex) else OpenKalaColorTokens.SurfaceMuted)
                     .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
                     .clickable { onTabClick(tab) }
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.Center
             ) {
                 AsyncImage(
                     model = tab.iconUrl,
                     contentDescription = tab.title,
                     modifier = Modifier.size(styleSpec.tabIconSize)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = tab.title,
-                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                    style = OpenKalaTypographyTokens.Body1Strong.copy(
+                        lineHeight = 20.sp
+                    ),
                     color = if (selected) colorFromHex(tab.focusedTextColorHex) else OpenKalaColorTokens.TextPrimary,
-                    maxLines = 1
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
                 )
             }
         }
