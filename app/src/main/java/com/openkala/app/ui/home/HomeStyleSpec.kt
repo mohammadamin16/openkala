@@ -33,10 +33,10 @@ data class HomeStyleSpec(
     val heroCardRadius: Dp = 16.dp,
     val heroHorizontalPadding: Dp = 14.dp,
 
-    val shortcutIconSize: Dp = 62.dp,
-    val shortcutLabelWidth: Dp = 90.dp,
+    val shortcutIconSize: Dp = 54.dp,
+    val shortcutLabelWidth: Dp = 80.dp,
     val shortcutRowHorizontalPadding: Dp = 18.dp,
-    val shortcutRowVerticalPadding: Dp = 14.dp,
+    val shortcutRowVerticalPadding: Dp = 8.dp,
 
     val incredibleHeaderTextSizeSp: Int = 44,
     val timerBadgeHeight: Dp = 42.dp,

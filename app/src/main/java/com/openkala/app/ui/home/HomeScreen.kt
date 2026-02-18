@@ -368,7 +368,7 @@ private fun ShortcutsRow(
                 horizontal = styleSpec.shortcutRowHorizontalPadding,
                 vertical = styleSpec.shortcutRowVerticalPadding
             ),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         data.shortcuts.forEach { item ->
             Column(
@@ -382,7 +382,7 @@ private fun ShortcutsRow(
                         .size(styleSpec.shortcutIconSize)
                         .clip(CircleShape)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = item.title,
                     maxLines = 2,
@@ -455,7 +455,7 @@ private fun IncredibleSection(
                         style = OpenKalaTypographyTokens.Body2,
                         color = OpenKalaColorTokens.TextPrimary
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
