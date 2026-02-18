@@ -43,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +71,7 @@ import com.openkala.app.ui.theme.OpenKalaRadiusTokens
 import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 import com.openkala.app.ui.theme.TextPrimary
 import com.openkala.app.ui.theme.TextSecondary
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreenRoute(
@@ -482,9 +484,20 @@ private fun IncredibleSection(
 
 @Composable
 private fun TimerBadge(totalSeconds: Long, styleSpec: HomeStyleSpec) {
-    val hours = (totalSeconds / 3600).coerceAtLeast(0)
-    val minutes = ((totalSeconds % 3600) / 60).coerceAtLeast(0)
-    val seconds = (totalSeconds % 60).coerceAtLeast(0)
+    val initial = totalSeconds.coerceAtLeast(0)
+    var remaining by remember(initial) { mutableStateOf(initial) }
+
+    LaunchedEffect(initial) {
+        remaining = initial
+        while (remaining > 0) {
+            delay(1000)
+            remaining -= 1
+        }
+    }
+
+    val hours = (remaining / 3600).coerceAtLeast(0)
+    val minutes = ((remaining % 3600) / 60).coerceAtLeast(0)
+    val seconds = (remaining % 60).coerceAtLeast(0)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         TimePart(seconds.toString().padStart(2, '0').toPersianDigits(), styleSpec)
         TimePart(minutes.toString().padStart(2, '0').toPersianDigits(), styleSpec)
