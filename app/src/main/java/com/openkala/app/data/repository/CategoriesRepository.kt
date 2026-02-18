@@ -23,33 +23,58 @@ class CategoriesRepository @Inject constructor(
     private val json: Json,
     private val ioDispatcher: CoroutineDispatcher
 ) {
+    @Volatile
+    private var memoryData: CategoriesScreenData? = null
+
+    @Volatile
+    private var memoryHash: String = ""
 
     fun streamCategories(): Flow<CategoriesPayload> = flow {
-        val cached = cacheStore.read()
-        var cachedData: CategoriesScreenData? = null
+        var cachedData: CategoriesScreenData? = memoryData
+        var cachedHash: String = memoryHash
 
-        if (cached != null) {
-            val cachedEnvelope = mapMegaMenuEnvelope(parse(cached.megaMenuJson))
-            if (cachedEnvelope != null) {
-                cachedData = cachedEnvelope.data
-                emit(
-                    CategoriesPayload(
-                        data = cachedEnvelope.data,
-                        source = DataSource.CACHE
-                    )
+        if (cachedData != null) {
+            emit(
+                CategoriesPayload(
+                    data = cachedData!!,
+                    source = DataSource.CACHE
                 )
+            )
+        } else {
+            val cached = cacheStore.read()
+            if (cached != null) {
+                runCatching {
+                    mapMegaMenuEnvelope(parse(cached.megaMenuJson))
+                }.onSuccess { cachedEnvelope ->
+                    if (cachedEnvelope != null) {
+                        cachedData = cachedEnvelope.data
+                        cachedHash = cachedEnvelope.hash.ifBlank { cached.megaMenuHash }
+                        memoryData = cachedEnvelope.data
+                        memoryHash = cachedHash
+                        emit(
+                            CategoriesPayload(
+                                data = cachedEnvelope.data,
+                                source = DataSource.CACHE
+                            )
+                        )
+                    }
+                }
             }
         }
+
+        val requestHash = cachedHash
 
         runCatching {
             val response = apiService.getDictionaries(
                 type = "mega_menu",
-                hash = cached?.megaMenuHash.orEmpty()
+                hash = requestHash
             )
 
             val envelope = mapMegaMenuEnvelope(response)
             when {
                 envelope != null -> {
+                    memoryData = envelope.data
+                    memoryHash = envelope.hash
                     cacheStore.write(
                         megaMenuJson = json.encodeToString(JsonObject.serializer(), response),
                         megaMenuHash = envelope.hash
