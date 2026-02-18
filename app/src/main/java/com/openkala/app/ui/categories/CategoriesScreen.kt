@@ -45,7 +45,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Laptop
-import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material.icons.outlined.TwoWheeler
 import androidx.compose.material3.Button
@@ -298,22 +297,6 @@ private fun CategoriesTopSearchBar(
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope
         )
-
-        Box(
-            modifier = Modifier
-                .size(52.dp)
-                .clip(CircleShape)
-                .background(OpenKalaColorTokens.SurfaceMuted)
-                .border(1.dp, OpenKalaColorTokens.Border, CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.NotificationsNone,
-                contentDescription = "Notification",
-                tint = OpenKalaColorTokens.TextLow,
-                modifier = Modifier.size(28.dp)
-            )
-        }
     }
 }
 

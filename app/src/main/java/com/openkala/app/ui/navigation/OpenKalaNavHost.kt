@@ -26,7 +26,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -91,7 +95,18 @@ fun OpenKalaNavHost() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
-    val showBottomBar = currentRoute == HOME_ROUTE || currentRoute == CATEGORIES_ROUTE
+    var isHomeTopTabWebMode by remember { mutableStateOf(false) }
+    val showBottomBar = when (currentRoute) {
+        HOME_ROUTE -> !isHomeTopTabWebMode
+        CATEGORIES_ROUTE -> true
+        else -> false
+    }
+
+    LaunchedEffect(currentRoute) {
+        if (currentRoute != HOME_ROUTE) {
+            isHomeTopTabWebMode = false
+        }
+    }
 
     SharedTransitionLayout {
         Scaffold(
@@ -146,6 +161,9 @@ fun OpenKalaNavHost() {
                         },
                         onSearchClick = {
                             navController.navigate(SEARCH_ENTRY_ROUTE)
+                        },
+                        onWebModeChanged = { isWebMode ->
+                            isHomeTopTabWebMode = isWebMode
                         },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this

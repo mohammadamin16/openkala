@@ -73,6 +73,35 @@ class HomeMappersTest {
         assertTrue(result.topBanners.isEmpty())
     }
 
+    @Test
+    fun mapHomeScreenData_parsesTabWebViewFields() {
+        val result = mapHomeScreenData(
+            home = homeJson(extraFields = ""),
+            pillars = pillarsJson(
+                """
+                "active_pillars": [
+                  {
+                    "name": "jet",
+                    "title": "۴۵ دقیقه‌ای",
+                    "is_webview": true,
+                    "web_url": "https://example.com/jet",
+                    "image": { "url": ["https://example.com/icon.png"] },
+                    "background_color": "#000000",
+                    "text_color": "#111111",
+                    "focused_text_color": "#ffffff",
+                    "default_tab": false
+                  }
+                ]
+                """.trimIndent()
+            )
+        )
+
+        assertEquals(1, result.superAppTabs.size)
+        assertEquals("jet", result.superAppTabs.first().name)
+        assertEquals(true, result.superAppTabs.first().isWebView)
+        assertEquals("https://example.com/jet", result.superAppTabs.first().webUrl)
+    }
+
     private fun homeJson(extraFields: String): JsonObject {
         return json.parseToJsonElement(
             """
@@ -91,12 +120,12 @@ class HomeMappersTest {
         ).jsonObject
     }
 
-    private fun pillarsJson(): JsonObject {
+    private fun pillarsJson(extraFields: String = "\"active_pillars\": []"): JsonObject {
         return json.parseToJsonElement(
             """
             {
               "data": {
-                "active_pillars": []
+                $extraFields
               }
             }
             """.trimIndent()

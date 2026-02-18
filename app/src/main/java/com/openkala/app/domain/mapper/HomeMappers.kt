@@ -63,6 +63,8 @@ private fun JsonElement.toSuperAppTab(): SuperAppTab? {
         name = obj.stringAt("name"),
         title = obj.stringAt("title"),
         iconUrl = obj.objectAt("image").arrayAt("url").firstString(),
+        isWebView = obj.booleanAt("is_webview"),
+        webUrl = obj.stringAt("web_url"),
         backgroundColorHex = obj.stringAt("background_color").ifBlank { "#FFFFFF" },
         textColorHex = obj.stringAt("text_color").ifBlank { "#212121" },
         focusedTextColorHex = obj.stringAt("focused_text_color").ifBlank { "#FFFFFF" },

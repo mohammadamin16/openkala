@@ -21,6 +21,8 @@ data class SuperAppTab(
     val name: String,
     val title: String,
     val iconUrl: String,
+    val isWebView: Boolean,
+    val webUrl: String,
     val backgroundColorHex: String,
     val textColorHex: String,
     val focusedTextColorHex: String,

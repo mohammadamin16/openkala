@@ -1,6 +1,9 @@
 package com.openkala.app.ui.home
 
 import android.graphics.Color.parseColor
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -20,7 +23,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -35,17 +37,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Category
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +62,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -83,17 +84,24 @@ import kotlinx.coroutines.delay
 fun HomeScreenRoute(
     onProductClick: (IncredibleOfferItem) -> Unit = {},
     onSearchClick: () -> Unit = {},
+    onWebModeChanged: (Boolean) -> Unit = {},
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     when (state) {
-        HomeUiState.Loading -> LoadingHomeScreen()
-        is HomeUiState.Error -> ErrorHomeScreen(
-            message = (state as HomeUiState.Error).message,
-            onRetry = viewModel::refresh
-        )
+        HomeUiState.Loading -> {
+            LaunchedEffect(Unit) { onWebModeChanged(false) }
+            LoadingHomeScreen()
+        }
+        is HomeUiState.Error -> {
+            LaunchedEffect(Unit) { onWebModeChanged(false) }
+            ErrorHomeScreen(
+                message = (state as HomeUiState.Error).message,
+                onRetry = viewModel::refresh
+            )
+        }
         is HomeUiState.Content -> HomeScreen(
             data = (state as HomeUiState.Content).data,
             isRefreshing = (state as HomeUiState.Content).isRefreshing,
@@ -101,6 +109,7 @@ fun HomeScreenRoute(
             pixelPerfectMode = PixelPerfectMode.Enabled,
             onProductClick = onProductClick,
             onSearchClick = onSearchClick,
+            onWebModeChanged = onWebModeChanged,
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope
         )
@@ -157,104 +166,216 @@ private fun HomeScreen(
     pixelPerfectMode: Boolean,
     onProductClick: (IncredibleOfferItem) -> Unit,
     onSearchClick: () -> Unit,
+    onWebModeChanged: (Boolean) -> Unit,
     sharedTransitionScope: SharedTransitionScope?,
     animatedVisibilityScope: AnimatedVisibilityScope?
 ) {
     var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
+    var currentWebView by remember { mutableStateOf<WebView?>(null) }
+    var webLoading by remember { mutableStateOf(false) }
+    val selectedTabData = remember(data.superAppTabs, selectedTab) {
+        data.superAppTabs.firstOrNull { it.name == selectedTab }
+    }
+    val inWebMode = selectedTab != "digikala"
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0),
-        bottomBar = {}
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .background(OpenKalaColorTokens.AppBackground)
-                .padding(padding)
-                .testTag("home_list"),
-            contentPadding = PaddingValues(bottom = 10.dp)
-        ) {
-            item {
-                TopTabsRow(
-                    tabs = data.superAppTabs,
-                    selectedTab = selectedTab,
-                    styleSpec = styleSpec,
-                    onTabClick = { tab -> selectedTab = tab.name }
-                )
-            }
+    LaunchedEffect(inWebMode) {
+        onWebModeChanged(inWebMode)
+    }
+    DisposableEffect(Unit) {
+        onDispose { onWebModeChanged(false) }
+    }
 
-            item {
-                SearchAndLocationSection(
-                    styleSpec = styleSpec,
-                    onSearchClick = onSearchClick,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
-                )
-            }
+    BackHandler(enabled = inWebMode) {
+        val webView = currentWebView
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            selectedTab = "digikala"
+        }
+    }
 
-            item {
-                val banners = data.heroBanners
-                val pagerState = rememberPagerState(pageCount = { banners.size.coerceAtLeast(1) })
-                HorizontalPager(
-                    state = pagerState,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .background(OpenKalaColorTokens.AppBackground)
+            .testTag("home_root")
+    ) {
+        TopTabsRow(
+            tabs = data.superAppTabs,
+            selectedTab = selectedTab,
+            styleSpec = styleSpec,
+            onTabClick = { tab -> selectedTab = tab.name }
+        )
+
+        if (!inWebMode) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .testTag("home_native_content")
+            ) {
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(styleSpec.heroSectionHeight)
-                        .background(OpenKalaColorTokens.Surface)
-                        .padding(vertical = 10.dp)
-                ) { page ->
-                    val banner = banners.getOrNull(page)
-                    if (banner != null) {
-                        AsyncImage(
-                            model = banner.imageUrl,
-                            contentDescription = banner.title,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(styleSpec.heroSectionHeight - 20.dp)
-                                .padding(horizontal = styleSpec.heroHorizontalPadding)
-                                .clip(OpenKalaRadiusTokens.Large),
-                            contentScale = ContentScale.Crop
+                        .fillMaxSize()
+                        .testTag("home_list"),
+                    contentPadding = PaddingValues(bottom = 10.dp)
+                ) {
+                    item {
+                        SearchAndLocationSection(
+                            styleSpec = styleSpec,
+                            onSearchClick = onSearchClick,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
+                    }
+
+                item {
+                    val banners = data.heroBanners
+                    val pagerState = rememberPagerState(pageCount = { banners.size.coerceAtLeast(1) })
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(styleSpec.heroSectionHeight)
+                            .background(OpenKalaColorTokens.Surface)
+                            .padding(vertical = 10.dp)
+                    ) { page ->
+                        val banner = banners.getOrNull(page)
+                        if (banner != null) {
+                            AsyncImage(
+                                model = banner.imageUrl,
+                                contentDescription = banner.title,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(styleSpec.heroSectionHeight - 20.dp)
+                                    .padding(horizontal = styleSpec.heroHorizontalPadding)
+                                    .clip(OpenKalaRadiusTokens.Large),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+                }
+
+                item { ShortcutsRow(data, styleSpec) }
+
+                item {
+                    IncredibleSection(
+                        items = data.incredibleOffers.items,
+                        styleSpec = styleSpec,
+                        pixelPerfectMode = pixelPerfectMode,
+                        onProductClick = onProductClick
+                    )
+                }
+                item {
+                    TopBannersSection(
+                        banners = data.topBanners,
+                        styleSpec = styleSpec
+                    )
+                }
+
+                    if (isRefreshing && !pixelPerfectMode) {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "در حال به‌روزرسانی...",
+                                    style = OpenKalaTypographyTokens.Caption,
+                                    color = OpenKalaColorTokens.TextLow
+                                )
+                            }
+                        }
                     }
                 }
             }
+        } else {
+            TopTabWebViewContainer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .testTag("home_top_tab_webview_container"),
+                url = selectedTabData?.webUrl.orEmpty(),
+                onWebViewReady = { currentWebView = it },
+                onLoadingChanged = { webLoading = it }
+            )
 
-            item { ShortcutsRow(data, styleSpec) }
-
-            item {
-                IncredibleSection(
-                    items = data.incredibleOffers.items,
-                    styleSpec = styleSpec,
-                    pixelPerfectMode = pixelPerfectMode,
-                    onProductClick = onProductClick
-                )
-            }
-            item {
-                TopBannersSection(
-                    banners = data.topBanners,
-                    styleSpec = styleSpec
-                )
-            }
-
-            if (isRefreshing && !pixelPerfectMode) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "در حال به‌روزرسانی...",
-                            style = OpenKalaTypographyTokens.Caption,
-                            color = OpenKalaColorTokens.TextLow
-                        )
-                    }
+            if (webLoading) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = DigikalaRed,
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
                 }
             }
         }
     }
+}
+
+@Composable
+private fun TopTabWebViewContainer(
+    modifier: Modifier = Modifier,
+    url: String,
+    onWebViewReady: (WebView) -> Unit,
+    onLoadingChanged: (Boolean) -> Unit
+) {
+    val normalizedUrl = remember(url) { normalizeWebUrl(url) }
+    if (normalizedUrl.isBlank()) {
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "لینک این بخش در دسترس نیست",
+                style = OpenKalaTypographyTokens.Subtitle,
+                color = OpenKalaColorTokens.TextMedium
+            )
+        }
+        return
+    }
+
+    AndroidView(
+        modifier = modifier.testTag("home_top_tab_webview"),
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.loadsImagesAutomatically = true
+                webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                        onLoadingChanged(true)
+                    }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        onLoadingChanged(false)
+                    }
+                }
+                loadUrl(normalizedUrl)
+            }
+        },
+        update = { webView ->
+            onWebViewReady(webView)
+            if (webView.url != normalizedUrl) {
+                webView.loadUrl(normalizedUrl)
+            }
+        }
+    )
 }
 
 @Composable
@@ -316,6 +437,16 @@ internal fun TopBannersSection(
                 }
             }
         }
+    }
+}
+
+private fun normalizeWebUrl(value: String): String {
+    val trimmed = value.trim()
+    if (trimmed.isBlank()) return ""
+    return when {
+        trimmed.startsWith("http://") || trimmed.startsWith("https://") -> trimmed
+        trimmed.startsWith("/") -> "https://www.digikala.com$trimmed"
+        else -> "https://$trimmed"
     }
 }
 
@@ -385,37 +516,16 @@ private fun SearchAndLocationSection(
                 vertical = styleSpec.searchSectionVerticalPadding
             )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            SharedSearchBar(
-                query = "",
-                placeholder = "جستجو در همه کالاها",
-                onQueryChange = {},
-                readOnly = true,
-                onClick = onSearchClick,
-                modifier = Modifier.weight(1f),
-                sharedTransitionScope = sharedTransitionScope,
-                animatedVisibilityScope = animatedVisibilityScope
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(styleSpec.notificationBubbleSize)
-                    .clip(CircleShape)
-                    .background(OpenKalaColorTokens.SurfaceMuted)
-                    .border(1.dp, OpenKalaColorTokens.Border, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.NotificationsNone,
-                    contentDescription = "Notification",
-                    tint = OpenKalaColorTokens.TextLow,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-        }
+        SharedSearchBar(
+            query = "",
+            placeholder = "جستجو در همه کالاها",
+            onQueryChange = {},
+            readOnly = true,
+            onClick = onSearchClick,
+            modifier = Modifier.fillMaxWidth(),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }
 
