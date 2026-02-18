@@ -28,4 +28,9 @@ interface DigikalaApiService {
         @Path("productId") productId: Long,
         @Query("page") page: Int = 1
     ): JsonObject
+
+    @GET("v1/autocomplete/")
+    suspend fun getAutocomplete(
+        @Query("q") query: String? = null
+    ): JsonObject
 }

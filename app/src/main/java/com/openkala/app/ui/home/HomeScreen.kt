@@ -1,6 +1,9 @@
 package com.openkala.app.ui.home
 
 import android.graphics.Color.parseColor
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -32,10 +36,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.NotificationsNone
-import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,6 +66,7 @@ import coil.compose.AsyncImage
 import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.SuperAppTab
+import com.openkala.app.ui.search.SharedSearchBar
 import com.openkala.app.ui.theme.DigikalaRed
 import com.openkala.app.ui.theme.OpenKalaColorTokens
 import com.openkala.app.ui.theme.OpenKalaRadiusTokens
@@ -73,9 +75,13 @@ import com.openkala.app.ui.theme.TextPrimary
 import com.openkala.app.ui.theme.TextSecondary
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreenRoute(
     onProductClick: (IncredibleOfferItem) -> Unit = {},
+    onSearchClick: () -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,7 +96,10 @@ fun HomeScreenRoute(
             isRefreshing = (state as HomeUiState.Content).isRefreshing,
             styleSpec = PixelPerfectHomeStyle,
             pixelPerfectMode = PixelPerfectMode.Enabled,
-            onProductClick = onProductClick
+            onProductClick = onProductClick,
+            onSearchClick = onSearchClick,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
         )
     }
 }
@@ -136,14 +145,17 @@ private fun ErrorHomeScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun HomeScreen(
     data: HomeScreenData,
     isRefreshing: Boolean,
     styleSpec: HomeStyleSpec,
     pixelPerfectMode: Boolean,
-    onProductClick: (IncredibleOfferItem) -> Unit
+    onProductClick: (IncredibleOfferItem) -> Unit,
+    onSearchClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope?,
+    animatedVisibilityScope: AnimatedVisibilityScope?
 ) {
     var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
 
@@ -165,14 +177,17 @@ private fun HomeScreen(
                     tabs = data.superAppTabs,
                     selectedTab = selectedTab,
                     styleSpec = styleSpec,
-                    onTabClick = { tab ->
-                        if (tab.name == "digikala") selectedTab = tab.name
-                    }
+                    onTabClick = { tab -> selectedTab = tab.name }
                 )
             }
 
             item {
-                SearchAndLocationSection(styleSpec)
+                SearchAndLocationSection(
+                    styleSpec = styleSpec,
+                    onSearchClick = onSearchClick,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             }
 
             item {
@@ -254,7 +269,7 @@ private fun TopTabsRow(
                 modifier = Modifier
                     .size(width = styleSpec.tabCardWidth, height = styleSpec.tabCardHeight)
                     .clip(OpenKalaRadiusTokens.Large)
-                    .background(if (selected) colorFromHex(tab.backgroundColorHex) else OpenKalaColorTokens.SurfaceMuted)
+                    .background(if (selected) DigikalaRed else OpenKalaColorTokens.SurfaceMuted)
                     .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
                     .clickable { onTabClick(tab) }
                     .padding(horizontal = 8.dp, vertical = 4.dp),
@@ -272,7 +287,7 @@ private fun TopTabsRow(
                     style = OpenKalaTypographyTokens.Body1Strong.copy(
                         lineHeight = 20.sp
                     ),
-                    color = if (selected) colorFromHex(tab.focusedTextColorHex) else OpenKalaColorTokens.TextPrimary,
+                    color = if (selected) OpenKalaColorTokens.White else OpenKalaColorTokens.TextPrimary,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center
@@ -282,8 +297,14 @@ private fun TopTabsRow(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun SearchAndLocationSection(styleSpec: HomeStyleSpec) {
+private fun SearchAndLocationSection(
+    styleSpec: HomeStyleSpec,
+    onSearchClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope?,
+    animatedVisibilityScope: AnimatedVisibilityScope?
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -297,43 +318,16 @@ private fun SearchAndLocationSection(styleSpec: HomeStyleSpec) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(styleSpec.searchBarHeight)
-                    .clip(OpenKalaRadiusTokens.Pill)
-                    .background(OpenKalaColorTokens.SurfaceMuted)
-                    .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Pill)
-                    .padding(horizontal = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null,
-                    tint = OpenKalaColorTokens.TextLow,
-                    modifier = Modifier.size(styleSpec.searchIconSize)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.Outlined.Storefront,
-                    contentDescription = null,
-                    tint = Color(0xFF7A4BE3),
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "جستجو در ",
-                    style = OpenKalaTypographyTokens.Subtitle,
-                    color = OpenKalaColorTokens.TextLow,
-                    fontSize = styleSpec.searchFontSize
-                )
-                Text(
-                    text = "دیجی‌کالا",
-                    style = OpenKalaTypographyTokens.SubtitleStrong,
-                    color = OpenKalaColorTokens.BrandPrimary,
-                    fontSize = styleSpec.searchFontSize
-                )
-            }
+            SharedSearchBar(
+                query = "",
+                placeholder = "جستجو در همه کالاها",
+                onQueryChange = {},
+                readOnly = true,
+                onClick = onSearchClick,
+                modifier = Modifier.weight(1f),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
+            )
 
             Box(
                 modifier = Modifier
@@ -524,16 +518,14 @@ private fun TimePart(value: String, styleSpec: HomeStyleSpec) {
 @Composable
 private fun HomeBottomBar(styleSpec: HomeStyleSpec) {
     val items = listOf(
-        Triple("دیجی‌کالای من", Icons.Outlined.PersonOutline, false),
-        Triple("مگنت", Icons.Outlined.PlayArrow, false),
-        Triple("سبد خرید", Icons.Outlined.ShoppingCart, false),
-        Triple("دسته‌بندی", Icons.Outlined.Category, false),
-        Triple("خانه", Icons.Outlined.Home, true)
+        Triple("خانه", Icons.Outlined.Home, true),
+        Triple("دسته‌بندی", Icons.Outlined.Category, false)
     )
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(OpenKalaColorTokens.Surface)
+            .navigationBarsPadding()
             .padding(top = styleSpec.bottomNavTopPadding, bottom = styleSpec.bottomNavBottomPadding),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
