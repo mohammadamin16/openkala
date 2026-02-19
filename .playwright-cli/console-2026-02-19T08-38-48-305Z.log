@@ -1,0 +1,1 @@
+[   12584ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://sentry.digikala.com/api/3/envelope/?sentry_key=6ec0a41878123816ca85f3d3bdc0bf45&sentry_version=7&sentry_client=sentry.javascript.nextjs%2F7.120.4:0

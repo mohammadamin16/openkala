@@ -25,6 +25,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -39,6 +40,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,8 +56,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -92,6 +103,7 @@ private fun ProductDetailScreen(
     onVariantClick: (Long) -> Unit
 ) {
     val data = state.data
+    val showInitialShimmer = data == null && state.errorMessage == null
     val selectedVariant = remember(data, state.selectedVariantId) {
         data?.variants?.firstOrNull { it.id == state.selectedVariantId }
             ?: data?.variants?.firstOrNull()
@@ -105,23 +117,14 @@ private fun ProductDetailScreen(
         }.distinct()
     }
 
-    if (state.isLoading && state.preview == null && data == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = OpenKalaColorTokens.BrandPrimary)
-        }
-        return
-    }
-
     Scaffold(
         contentWindowInsets = WindowInsets(0),
         bottomBar = {
             StickyBuyBar(
                 selectedVariant = selectedVariant,
                 previewPrice = state.preview?.price,
-                previewDiscount = state.preview?.discountPercent
+                previewDiscount = state.preview?.discountPercent,
+                isLoading = showInitialShimmer
             )
         }
     ) { padding ->
@@ -138,17 +141,24 @@ private fun ProductDetailScreen(
             }
 
             item {
-                BreadcrumbRow(data = data)
+                BreadcrumbRow(
+                    data = data,
+                    isLoading = showInitialShimmer
+                )
             }
 
             item {
-                MediaSection(galleryImages = galleryImages)
+                MediaSection(
+                    galleryImages = galleryImages,
+                    isLoading = showInitialShimmer
+                )
             }
 
             item {
                 OfferCard(
                     data = data,
-                    selectedVariant = selectedVariant
+                    selectedVariant = selectedVariant,
+                    isLoading = showInitialShimmer
                 )
             }
 
@@ -156,12 +166,16 @@ private fun ProductDetailScreen(
                 ColorSection(
                     data = data,
                     selectedVariantId = selectedVariant?.id,
-                    onVariantClick = onVariantClick
+                    onVariantClick = onVariantClick,
+                    isLoading = showInitialShimmer
                 )
             }
 
             item {
-                SpecificationSection(data = data)
+                SpecificationSection(
+                    data = data,
+                    isLoading = showInitialShimmer
+                )
             }
 
             if (state.errorMessage != null && data == null) {
@@ -217,31 +231,62 @@ private fun TopActionBar(onClose: () -> Unit) {
 }
 
 @Composable
-private fun BreadcrumbRow(data: ProductDetailData?) {
+private fun BreadcrumbRow(
+    data: ProductDetailData?,
+    isLoading: Boolean
+) {
     val breadcrumbs = data?.breadcrumb?.dropLast(1).orEmpty().takeLast(3)
+    val visible = isLoading || breadcrumbs.isNotEmpty()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(OpenKalaColorTokens.Surface)
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        breadcrumbs.forEachIndexed { index, title ->
-            Text(
-                text = title,
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.TextLow,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (index < breadcrumbs.lastIndex) {
-                Text(
-                    text = "›",
-                    style = OpenKalaTypographyTokens.SubtitleStrong,
-                    color = OpenKalaColorTokens.TextLow
-                )
+    AnimatedVisibility(visible = visible) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(OpenKalaColorTokens.Surface)
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 14.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Crossfade(targetState = isLoading, label = "breadcrumb_crossfade") { loading ->
+                if (loading) {
+                    val shimmerBrush = rememberShimmerBrush()
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        repeat(3) { index ->
+                            ShimmerTextLine(
+                                brush = shimmerBrush,
+                                width = if (index == 1) 74.dp else 92.dp,
+                                height = 14.dp
+                            )
+                            if (index < 2) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(6.dp)
+                                        .clip(CircleShape)
+                                        .background(shimmerBrush)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        breadcrumbs.forEachIndexed { index, title ->
+                            Text(
+                                text = title,
+                                style = OpenKalaTypographyTokens.SubtitleStrong,
+                                color = OpenKalaColorTokens.TextLow,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            if (index < breadcrumbs.lastIndex) {
+                                Text(
+                                    text = "›",
+                                    style = OpenKalaTypographyTokens.SubtitleStrong,
+                                    color = OpenKalaColorTokens.TextLow
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -249,51 +294,94 @@ private fun BreadcrumbRow(data: ProductDetailData?) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun MediaSection(galleryImages: List<String>) {
-    val pagerState = rememberPagerState(pageCount = { galleryImages.size.coerceAtLeast(1) })
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(OpenKalaColorTokens.SurfaceMuted)
-            .padding(top = 6.dp, bottom = 14.dp)
-    ) {
-        HorizontalPager(
-            state = pagerState,
+private fun MediaSection(
+    galleryImages: List<String>,
+    isLoading: Boolean
+) {
+    val visible = isLoading || galleryImages.isNotEmpty()
+    AnimatedVisibility(visible = visible) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(380.dp)
-        ) { page ->
-            val image = galleryImages.getOrNull(page)
-            if (image != null) {
-                AsyncImage(
-                    model = image,
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp)
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.Center
+                .background(OpenKalaColorTokens.SurfaceMuted)
+                .padding(top = 6.dp, bottom = 14.dp)
         ) {
-            repeat(galleryImages.size.coerceAtLeast(1)) { index ->
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 2.dp)
-                        .size(width = if (pagerState.currentPage == index) 18.dp else 8.dp, height = 8.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (pagerState.currentPage == index) OpenKalaColorTokens.TextLow
-                            else OpenKalaColorTokens.Border
+            Crossfade(targetState = isLoading, label = "media_crossfade") { loading ->
+                if (loading) {
+                    val shimmerBrush = rememberShimmerBrush()
+                    Column {
+                        ShimmerBox(
+                            brush = shimmerBrush,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(380.dp)
+                                .padding(horizontal = 24.dp)
+                                .clip(OpenKalaRadiusTokens.Large)
+                                .testTag("product_shimmer_media")
                         )
-                )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            repeat(3) {
+                                ShimmerBox(
+                                    brush = shimmerBrush,
+                                    modifier = Modifier
+                                        .padding(horizontal = 2.dp)
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    val pagerState = rememberPagerState(pageCount = { galleryImages.size.coerceAtLeast(1) })
+                    Column {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(380.dp)
+                        ) { page ->
+                            val image = galleryImages.getOrNull(page)
+                            if (image != null) {
+                                AsyncImage(
+                                    model = image,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 24.dp)
+                                )
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            repeat(galleryImages.size.coerceAtLeast(1)) { index ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(horizontal = 2.dp)
+                                        .size(
+                                            width = if (pagerState.currentPage == index) 18.dp else 8.dp,
+                                            height = 8.dp
+                                        )
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (pagerState.currentPage == index) OpenKalaColorTokens.TextLow
+                                            else OpenKalaColorTokens.Border
+                                        )
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -302,9 +390,12 @@ private fun MediaSection(galleryImages: List<String>) {
 @Composable
 private fun OfferCard(
     data: ProductDetailData?,
-    selectedVariant: ProductVariant?
+    selectedVariant: ProductVariant?,
+    isLoading: Boolean
 ) {
     val title = data?.title.orEmpty()
+    val visible = isLoading || data != null
+    if (!visible) return
 
     Column(
         modifier = Modifier
@@ -315,95 +406,178 @@ private fun OfferCard(
             .border(1.dp, OpenKalaColorTokens.Border, OpenKalaRadiusTokens.Large)
             .padding(12.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = selectedVariant?.badgeTitle?.ifBlank { "پیشنهاد ویژه" } ?: "پیشنهاد ویژه",
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.BrandPrimary
-            )
-            selectedVariant?.timerSeconds?.let {
-                CountdownTimerText(totalSeconds = it)
-            }
-        }
+        Crossfade(targetState = isLoading, label = "offer_crossfade") { loading ->
+            if (loading) {
+                val shimmerBrush = rememberShimmerBrush()
+                Column(modifier = Modifier.testTag("product_shimmer_offer")) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ShimmerTextLine(shimmerBrush, width = 86.dp, height = 16.dp)
+                        ShimmerTextLine(shimmerBrush, width = 64.dp, height = 16.dp)
+                    }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
-                    contentDescription = "Share",
-                    tint = OpenKalaColorTokens.TextHigh
-                )
-                Icon(
-                    imageVector = Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = OpenKalaColorTokens.TextHigh
-                )
-            }
-            Text(
-                text = data?.breadcrumb?.dropLast(1)?.lastOrNull().orEmpty(),
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.TextLow,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
-            )
-        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            ShimmerBox(
+                                brush = shimmerBrush,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .clip(CircleShape)
+                            )
+                            ShimmerBox(
+                                brush = shimmerBrush,
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                        ShimmerTextLine(shimmerBrush, width = 92.dp, height = 14.dp)
+                    }
 
-        Text(
-            text = title,
-            style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
-            color = OpenKalaColorTokens.TextPrimary,
-            modifier = Modifier.padding(top = 8.dp)
-        )
+                    ShimmerTextLine(
+                        brush = shimmerBrush,
+                        width = 220.dp,
+                        height = 22.dp,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+                    ShimmerTextLine(
+                        brush = shimmerBrush,
+                        width = 180.dp,
+                        height = 22.dp,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            MetricChip(
-                text = "${(data?.questionsCount ?: 0).toPersianDigits()} پرسش و پاسخ"
-            )
-            MetricChip(
-                text = "${(data?.commentsCount ?: 0).toPersianDigits()} دیدگاه"
-            )
-            val ratingText = data?.rating?.let { rating ->
-                val count = data.ratingCount ?: 0
-                "${rating.toString().toPersianDigits()} (${count.toPersianDigits()}) ★"
-            } ?: "-"
-            MetricChip(text = ratingText)
-        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        repeat(3) {
+                            ShimmerBox(
+                                brush = shimmerBrush,
+                                modifier = Modifier
+                                    .width(88.dp)
+                                    .height(34.dp)
+                                    .clip(OpenKalaRadiusTokens.Medium)
+                            )
+                        }
+                    }
 
-        val shipping = selectedVariant?.shippingText ?: data?.shippingText
-        if (!shipping.isNullOrBlank()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clip(OpenKalaRadiusTokens.Medium)
-                    .background(Color(0xFFE9EBF8))
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = shipping,
-                    style = OpenKalaTypographyTokens.SubtitleStrong,
-                    color = OpenKalaColorTokens.TextPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    ShimmerBox(
+                        brush = shimmerBrush,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp)
+                            .height(44.dp)
+                            .clip(OpenKalaRadiusTokens.Medium)
+                    )
+                }
+            } else {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = selectedVariant?.badgeTitle?.ifBlank { "پیشنهاد ویژه" } ?: "پیشنهاد ویژه",
+                            style = OpenKalaTypographyTokens.SubtitleStrong,
+                            color = OpenKalaColorTokens.BrandPrimary
+                        )
+                        selectedVariant?.timerSeconds?.let {
+                            CountdownTimerText(totalSeconds = it)
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = "Share",
+                                tint = OpenKalaColorTokens.TextHigh
+                            )
+                            Icon(
+                                imageVector = Icons.Outlined.FavoriteBorder,
+                                contentDescription = "Favorite",
+                                tint = OpenKalaColorTokens.TextHigh
+                            )
+                        }
+                        Text(
+                            text = data?.breadcrumb?.dropLast(1)?.lastOrNull().orEmpty(),
+                            style = OpenKalaTypographyTokens.SubtitleStrong,
+                            color = OpenKalaColorTokens.TextLow,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                    }
+
+                    Text(
+                        text = title,
+                        style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
+                        color = OpenKalaColorTokens.TextPrimary,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        MetricChip(
+                            text = "${(data?.questionsCount ?: 0).toPersianDigits()} پرسش و پاسخ"
+                        )
+                        MetricChip(
+                            text = "${(data?.commentsCount ?: 0).toPersianDigits()} دیدگاه"
+                        )
+                        val ratingText = data?.rating?.let { rating ->
+                            val count = data.ratingCount ?: 0
+                            "${rating.toString().toPersianDigits()} (${count.toPersianDigits()}) ★"
+                        } ?: ""
+                        if (ratingText.isNotBlank()) {
+                            MetricChip(text = ratingText)
+                        }
+                    }
+
+                    val shipping = selectedVariant?.shippingText ?: data?.shippingText
+                    AnimatedVisibility(visible = !shipping.isNullOrBlank()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
+                                .clip(OpenKalaRadiusTokens.Medium)
+                                .background(Color(0xFFE9EBF8))
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = shipping.orEmpty(),
+                                style = OpenKalaTypographyTokens.SubtitleStrong,
+                                color = OpenKalaColorTokens.TextPrimary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -443,15 +617,66 @@ private fun MetricChip(text: String) {
 }
 
 @Composable
+private fun rememberShimmerBrush(): Brush {
+    val transition = rememberInfiniteTransition(label = "product_detail_shimmer_transition")
+    val offset by transition.animateFloat(
+        initialValue = -300f,
+        targetValue = 1200f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1100),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "product_detail_shimmer_offset"
+    )
+
+    return Brush.linearGradient(
+        colors = listOf(
+            OpenKalaColorTokens.SurfaceMuted,
+            OpenKalaColorTokens.Surface,
+            OpenKalaColorTokens.SurfaceMuted
+        ),
+        start = Offset(offset - 220f, offset - 220f),
+        end = Offset(offset, offset)
+    )
+}
+
+@Composable
+private fun ShimmerBox(
+    brush: Brush,
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier.background(brush)
+    )
+}
+
+@Composable
+private fun ShimmerTextLine(
+    brush: Brush,
+    width: androidx.compose.ui.unit.Dp,
+    height: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    ShimmerBox(
+        brush = brush,
+        modifier = modifier
+            .width(width)
+            .height(height)
+            .clip(RoundedCornerShape(6.dp))
+    )
+}
+
+@Composable
 private fun ColorSection(
     data: ProductDetailData?,
     selectedVariantId: Long?,
-    onVariantClick: (Long) -> Unit
+    onVariantClick: (Long) -> Unit,
+    isLoading: Boolean
 ) {
     val variants = data?.variants.orEmpty()
     val selectedVariant = variants.firstOrNull { it.id == selectedVariantId } ?: variants.firstOrNull()
 
-    if (variants.isEmpty()) return
+    if (!isLoading && variants.isEmpty()) return
 
     Column(
         modifier = Modifier
@@ -459,30 +684,62 @@ private fun ColorSection(
             .background(OpenKalaColorTokens.Surface)
             .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
-        Text(
-            text = "رنگ: ${selectedVariant?.colorTitle.orEmpty()}",
-            style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W800),
-            color = OpenKalaColorTokens.TextPrimary
-        )
+        Crossfade(targetState = isLoading, label = "color_crossfade") { loading ->
+            if (loading) {
+                val shimmerBrush = rememberShimmerBrush()
+                Column(modifier = Modifier.testTag("product_shimmer_color")) {
+                    ShimmerTextLine(
+                        brush = shimmerBrush,
+                        width = 132.dp,
+                        height = 18.dp
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                            .padding(top = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        repeat(4) {
+                            ShimmerBox(
+                                brush = shimmerBrush,
+                                modifier = Modifier
+                                    .width(96.dp)
+                                    .height(44.dp)
+                                    .clip(OpenKalaRadiusTokens.Medium)
+                            )
+                        }
+                    }
+                }
+            } else {
+                Column {
+                    Text(
+                        text = "رنگ: ${selectedVariant?.colorTitle.orEmpty()}",
+                        style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W800),
+                        color = OpenKalaColorTokens.TextPrimary
+                    )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            variants.forEach { variant ->
-                ColorChip(
-                    option = ProductColorOption(
-                        id = variant.colorId ?: variant.id,
-                        title = variant.colorTitle,
-                        hexCode = variant.colorHex,
-                        variantId = variant.id
-                    ),
-                    selected = variant.id == selectedVariant?.id,
-                    onClick = { onVariantClick(variant.id) }
-                )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                            .padding(top = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        variants.forEach { variant ->
+                            ColorChip(
+                                option = ProductColorOption(
+                                    id = variant.colorId ?: variant.id,
+                                    title = variant.colorTitle,
+                                    hexCode = variant.colorHex,
+                                    variantId = variant.id
+                                ),
+                                selected = variant.id == selectedVariant?.id,
+                                onClick = { onVariantClick(variant.id) }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -524,9 +781,12 @@ private fun ColorChip(
 }
 
 @Composable
-private fun SpecificationSection(data: ProductDetailData?) {
+private fun SpecificationSection(
+    data: ProductDetailData?,
+    isLoading: Boolean
+) {
     val specs = data?.specifications.orEmpty()
-    if (specs.isEmpty()) return
+    if (!isLoading && specs.isEmpty()) return
 
     Column(
         modifier = Modifier
@@ -535,44 +795,72 @@ private fun SpecificationSection(data: ProductDetailData?) {
             .background(OpenKalaColorTokens.Surface)
             .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "مشخصات کالا",
-                style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
-                color = OpenKalaColorTokens.TextPrimary
-            )
-            Text(
-                text = "مشاهده همه",
-                style = OpenKalaTypographyTokens.SubtitleStrong,
-                color = OpenKalaColorTokens.TextHigh
-            )
-        }
+        Crossfade(targetState = isLoading, label = "spec_crossfade") { loading ->
+            if (loading) {
+                val shimmerBrush = rememberShimmerBrush()
+                Column(modifier = Modifier.testTag("product_shimmer_spec")) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ShimmerTextLine(shimmerBrush, width = 100.dp, height = 18.dp)
+                        ShimmerTextLine(shimmerBrush, width = 64.dp, height = 14.dp)
+                    }
+                    repeat(4) {
+                        ShimmerBox(
+                            brush = shimmerBrush,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
+                                .height(56.dp)
+                                .clip(OpenKalaRadiusTokens.Medium)
+                        )
+                    }
+                }
+            } else {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "مشخصات کالا",
+                            style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
+                            color = OpenKalaColorTokens.TextPrimary
+                        )
+                        Text(
+                            text = "مشاهده همه",
+                            style = OpenKalaTypographyTokens.SubtitleStrong,
+                            color = OpenKalaColorTokens.TextHigh
+                        )
+                    }
 
-        specs.forEach { spec ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .clip(OpenKalaRadiusTokens.Medium)
-                    .background(OpenKalaColorTokens.SurfaceMuted)
-                    .padding(horizontal = 10.dp, vertical = 8.dp)
-            ) {
-                Text(
-                    text = spec.title,
-                    style = OpenKalaTypographyTokens.Body1,
-                    color = OpenKalaColorTokens.TextLow
-                )
-                Text(
-                    text = spec.value,
-                    style = OpenKalaTypographyTokens.Body1Strong,
-                    color = OpenKalaColorTokens.TextPrimary,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    specs.forEach { spec ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
+                                .clip(OpenKalaRadiusTokens.Medium)
+                                .background(OpenKalaColorTokens.SurfaceMuted)
+                                .padding(horizontal = 10.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = spec.title,
+                                style = OpenKalaTypographyTokens.Body1,
+                                color = OpenKalaColorTokens.TextLow
+                            )
+                            Text(
+                                text = spec.value,
+                                style = OpenKalaTypographyTokens.Body1Strong,
+                                color = OpenKalaColorTokens.TextPrimary,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -582,7 +870,8 @@ private fun SpecificationSection(data: ProductDetailData?) {
 private fun StickyBuyBar(
     selectedVariant: ProductVariant?,
     previewPrice: Long?,
-    previewDiscount: Int?
+    previewDiscount: Int?,
+    isLoading: Boolean
 ) {
     val price = selectedVariant?.price ?: previewPrice
     val discount = selectedVariant?.discountPercent ?: previewDiscount
@@ -618,39 +907,66 @@ private fun StickyBuyBar(
             modifier = Modifier.widthIn(min = 110.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            if (rrpPrice != null && discount != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = "${discount.toPersianDigits()}%",
-                        style = OpenKalaTypographyTokens.CaptionStrong,
-                        color = OpenKalaColorTokens.White,
-                        modifier = Modifier
-                            .clip(OpenKalaRadiusTokens.Medium)
-                            .background(OpenKalaColorTokens.BrandPrimary)
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                    Text(
-                        text = rrpPrice.toToman().toPersianDigits(),
-                        style = OpenKalaTypographyTokens.Body1,
-                        color = OpenKalaColorTokens.TextLow,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+            Crossfade(targetState = isLoading, label = "sticky_price_crossfade") { loading ->
+                if (loading) {
+                    val shimmerBrush = rememberShimmerBrush()
+                    Column(modifier = Modifier.testTag("product_shimmer_price")) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            ShimmerBox(
+                                brush = shimmerBrush,
+                                modifier = Modifier
+                                    .width(34.dp)
+                                    .height(18.dp)
+                                    .clip(OpenKalaRadiusTokens.Medium)
+                            )
+                            ShimmerTextLine(shimmerBrush, width = 78.dp, height = 14.dp)
+                        }
+                        ShimmerTextLine(
+                            brush = shimmerBrush,
+                            width = 110.dp,
+                            height = 24.dp,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                        ShimmerTextLine(shimmerBrush, width = 38.dp, height = 14.dp)
+                    }
+                } else {
+                    Column {
+                        if (rrpPrice != null && discount != null) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "${discount.toPersianDigits()}%",
+                                    style = OpenKalaTypographyTokens.CaptionStrong,
+                                    color = OpenKalaColorTokens.White,
+                                    modifier = Modifier
+                                        .clip(OpenKalaRadiusTokens.Medium)
+                                        .background(OpenKalaColorTokens.BrandPrimary)
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                                Text(
+                                    text = rrpPrice.toToman().toPersianDigits(),
+                                    style = OpenKalaTypographyTokens.Body1,
+                                    color = OpenKalaColorTokens.TextLow,
+                                    textDecoration = TextDecoration.LineThrough
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = (price?.toToman()?.toPersianDigits() ?: "-"),
+                            style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
+                            color = OpenKalaColorTokens.TextPrimary
+                        )
+                        Text(
+                            text = "تومان",
+                            style = OpenKalaTypographyTokens.Subtitle,
+                            color = OpenKalaColorTokens.TextHigh
+                        )
+                    }
                 }
             }
-
-            Text(
-                text = (price?.toToman()?.toPersianDigits() ?: "-") ,
-                style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W900),
-                color = OpenKalaColorTokens.TextPrimary
-            )
-            Text(
-                text = "تومان",
-                style = OpenKalaTypographyTokens.Subtitle,
-                color = OpenKalaColorTokens.TextHigh
-            )
         }
     }
 }

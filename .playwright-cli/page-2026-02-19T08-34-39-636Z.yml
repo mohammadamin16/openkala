@@ -1,0 +1,904 @@
+- generic [active] [ref=e1]:
+  - img [ref=e2]
+  - generic [ref=e4]:
+    - banner [ref=e6]:
+      - link "قسطی" [ref=e8] [cursor=pointer]:
+        - /url: /landing/home-appliance-installment/?&promo_name=%D9%82%D8%B3%D8%B7%DB%8C&promo_position=all_mega_menu_top&promo_creative=206087&bCode=206087
+        - generic "قسطی" [ref=e10]:
+          - img "قسطی" [ref=e12]
+      - link "لوگوی دیجیکالا" [ref=e17] [cursor=pointer]:
+        - /url: /
+        - generic "لوگوی دیجیکالا" [ref=e18]:
+          - img "لوگوی دیجیکالا" [ref=e19]
+      - navigation [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e34] [cursor=pointer]:
+              - img [ref=e36]
+              - text: دسته‌بندی کالاها
+            - generic [ref=e38]:
+              - link "شگفت‌انگیزها" [ref=e40] [cursor=pointer]:
+                - /url: /incredible-offers/
+                - img [ref=e42]
+                - text: شگفت‌انگیزها
+              - link " سوپرمارکت" [ref=e45] [cursor=pointer]:
+                - /url: /main/food-beverage/
+                - generic [ref=e47]: 
+                - text: سوپرمارکت
+              - link " طلای دیجیتال" [ref=e49] [cursor=pointer]:
+                - /url: https://www.digikala.com/wealth/my-assets/?utm_source=dk&utm_medium=undersearchbutton&utm_campaign=fixbutton
+                - generic [ref=e51]: 
+                - text: طلای دیجیتال
+              - link "پرفروش‌ترین‌ها" [ref=e53] [cursor=pointer]:
+                - /url: /best-selling/
+                - img [ref=e55]
+                - text: پرفروش‌ترین‌ها
+            - generic [ref=e57]:
+              - link "سوالی دارید؟" [ref=e59] [cursor=pointer]:
+                - /url: /faq/
+              - link "در دیجی‌کالا بفروشید!" [ref=e61] [cursor=pointer]:
+                - /url: /landings/seller-introduction/
+          - generic [ref=e65] [cursor=pointer]:
+            - generic [ref=e67]: 
+            - paragraph [ref=e68]: شهر خود را انتخاب کنید
+    - generic [ref=e70]:
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e77]: 
+          - generic [ref=e78]: برای نتایج دقیق‌تر یک دسته‌بندی انتخاب کنید
+        - generic [ref=e79] [cursor=pointer]:
+          - generic [ref=e80]:
+            - generic [ref=e81]:
+              - generic [ref=e82]: چراغ مطالعه
+              - generic [ref=e83]: در چراغ مطالعه
+            - img [ref=e85]
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - generic [ref=e89]: چراغ مطالعه فانتزی
+              - generic [ref=e90]: در چراغ مطالعه
+            - img [ref=e92]
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - generic [ref=e96]: چراغ مطالعه شارژی
+              - generic [ref=e97]: در چراغ مطالعه
+            - img [ref=e99]
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - generic [ref=e107]:
+            - generic [ref=e109]:
+              - img [ref=e111]
+              - paragraph [ref=e113] [cursor=pointer]: "مرتب سازی:"
+            - generic [ref=e114]:
+              - generic [ref=e115] [cursor=pointer]: مرتبط‌ترین
+              - generic [ref=e116] [cursor=pointer]: پربازدیدترین
+              - generic [ref=e117] [cursor=pointer]: جدیدترین
+              - generic [ref=e118] [cursor=pointer]: پرفروش‌ترین‌
+              - generic [ref=e119] [cursor=pointer]: ارزان‌ترین
+              - generic [ref=e120] [cursor=pointer]: گران‌ترین
+              - generic [ref=e121] [cursor=pointer]: سریع‌ترین ارسال
+              - generic [ref=e122] [cursor=pointer]: پیشنهاد خریداران
+              - generic [ref=e123] [cursor=pointer]: منتخب
+            - generic [ref=e125]: ۶۴۰ کالا
+          - generic [ref=e126]:
+            - link [ref=e128] [cursor=pointer]:
+              - /url: /product/dkp-13929175/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%D8%A7%D8%B1%DA%98%DB%8C-%D9%85%D8%AF%D9%84-6082q/
+              - article [ref=e130]:
+                - generic [ref=e133]:
+                  - generic [ref=e136]:
+                    - generic "چراغ مطالعه مدل 6082Q" [ref=e138]:
+                      - img "چراغ مطالعه مدل 6082Q" [ref=e140]
+                    - img [ref=e146]
+                  - generic [ref=e148]:
+                    - heading "چراغ مطالعه مدل 6082Q" [level=3] [ref=e151]
+                    - generic [ref=e152]:
+                      - generic [ref=e153]:
+                        - img [ref=e155]
+                        - paragraph [ref=e157]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e158]:
+                        - paragraph [ref=e159]: ۴.۶
+                        - img [ref=e161]
+                    - generic [ref=e165]:
+                      - generic [ref=e166]: ۵۵۸,۸۰۰
+                      - img [ref=e168]
+            - link [ref=e171] [cursor=pointer]:
+              - /url: /product/dkp-101425/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-en-111/
+              - article [ref=e173]:
+                - generic [ref=e177]:
+                  - generic [ref=e180]:
+                    - generic "چراغ مطالعه صنایع کریم زاده مدل EN-111" [ref=e182]:
+                      - img "چراغ مطالعه صنایع کریم زاده مدل EN-111" [ref=e184]
+                    - img [ref=e190]
+                  - generic [ref=e192]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل EN-111" [level=3] [ref=e195]
+                    - generic [ref=e196]:
+                      - generic [ref=e197]:
+                        - img [ref=e199]
+                        - paragraph [ref=e201]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e202]:
+                        - paragraph [ref=e203]: ۴.۳
+                        - img [ref=e205]
+                    - generic [ref=e207]:
+                      - generic [ref=e208]:
+                        - generic [ref=e210]: ۱۱٪
+                        - generic [ref=e211]:
+                          - generic [ref=e212]: ۵۲۹,۵۵۰
+                          - img [ref=e214]
+                      - generic [ref=e217]: ۵۹۵,۰۰۰
+            - link [ref=e219] [cursor=pointer]:
+              - /url: /product/dkp-101471/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B5%D9%86%D8%A7%DB%8C%D8%B9-%DA%A9%D8%B1%DB%8C%D9%85-%D8%B2%D8%A7%D8%AF%D9%87-%D9%85%D8%AF%D9%84-dl-105/
+              - article [ref=e221]:
+                - generic [ref=e224]:
+                  - generic [ref=e227]:
+                    - generic "چراغ مطالعه صنایع کریم زاده مدل DL-105" [ref=e229]:
+                      - img "چراغ مطالعه صنایع کریم زاده مدل DL-105" [ref=e231]
+                    - img [ref=e237]
+                  - generic [ref=e239]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل DL-105" [level=3] [ref=e242]
+                    - generic [ref=e243]:
+                      - generic [ref=e244]:
+                        - img [ref=e246]
+                        - paragraph [ref=e248]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e249]:
+                        - paragraph [ref=e250]: ۴.۴
+                        - img [ref=e252]
+                    - generic [ref=e256]:
+                      - generic [ref=e257]: ۳۰۴,۵۲۰
+                      - img [ref=e259]
+            - link [ref=e262] [cursor=pointer]:
+              - /url: /product/dkp-10011864/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%88%DB%8C%D8%AF%D8%A7%D8%B3%DB%8C-%D9%85%D8%AF%D9%84-wd-6082q/
+              - article [ref=e264]:
+                - generic [ref=e267]:
+                  - generic [ref=e270]:
+                    - generic "چراغ مطالعه ویداسی مدل WD-6082Q" [ref=e272]
+                    - img [ref=e280]
+                  - generic [ref=e282]:
+                    - heading "چراغ مطالعه ویداسی مدل WD-6082Q" [level=3] [ref=e285]
+                    - generic [ref=e286]:
+                      - generic [ref=e287]:
+                        - img [ref=e289]
+                        - paragraph [ref=e291]: ارسال فروشنده
+                      - generic [ref=e292]:
+                        - paragraph [ref=e293]: ۴.۵
+                        - img [ref=e295]
+                    - generic [ref=e299]:
+                      - generic [ref=e300]: ۵۳۱,۰۰۰
+                      - img [ref=e302]
+            - link [ref=e305] [cursor=pointer]:
+              - /url: /product/dkp-563439/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-en-101/
+              - article [ref=e307]:
+                - generic [ref=e310]:
+                  - generic [ref=e313]:
+                    - generic "چراغ مطالعه صنایع کریم زاده مدل EN-101" [ref=e315]
+                    - img [ref=e323]
+                  - generic [ref=e325]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل EN-101" [level=3] [ref=e328]
+                    - generic [ref=e329]:
+                      - generic [ref=e330]:
+                        - img [ref=e332]
+                        - paragraph [ref=e334]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e335]:
+                        - paragraph [ref=e336]: ۴.۲
+                        - img [ref=e338]
+                    - generic [ref=e342]:
+                      - generic [ref=e343]: ۵۱۵,۰۰۰
+                      - img [ref=e345]
+            - link [ref=e348] [cursor=pointer]:
+              - /url: /product/dkp-20894106/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%D8%A7%D8%B1%DA%98%DB%8C-%D9%84%D9%88%D9%85%DB%8C%DA%A9%D8%B3-%D9%85%D8%AF%D9%84-dino-tv/
+              - article [ref=e350]:
+                - generic [ref=e355]:
+                  - generic "چراغ مطالعه شارژی لومیکس مدل Dino TV" [ref=e360]
+                  - generic [ref=e366]:
+                    - heading "چراغ مطالعه شارژی لومیکس مدل Dino TV" [level=3] [ref=e369]
+                    - generic [ref=e370]:
+                      - generic [ref=e371]:
+                        - img [ref=e373]
+                        - paragraph [ref=e375]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e376]:
+                        - paragraph [ref=e377]: ۴.۸
+                        - img [ref=e379]
+                    - generic [ref=e381]:
+                      - generic [ref=e382]:
+                        - generic [ref=e384]: ۱۸٪
+                        - generic [ref=e385]:
+                          - generic [ref=e386]: ۱,۸۹۰,۰۰۰
+                          - img [ref=e388]
+                      - generic [ref=e391]: ۲,۳۰۰,۰۰۰
+            - link [ref=e393] [cursor=pointer]:
+              - /url: /product/dkp-14284406/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%D8%A7%D8%B1%DA%98%DB%8C-%D9%85%D8%AF%D9%84-%DA%AF%DB%8C%D8%B1%D9%87-%D8%A7%DB%8C-%DA%A9%D8%AF-my-912/
+              - article [ref=e395]:
+                - generic [ref=e398]:
+                  - generic "چراغ مطالعه شارژی مدل گیره ای کد MY-912" [ref=e403]
+                  - generic [ref=e408]:
+                    - heading "چراغ مطالعه شارژی مدل گیره ای کد MY-912" [level=3] [ref=e411]
+                    - generic [ref=e412]:
+                      - generic [ref=e413]:
+                        - img [ref=e415]
+                        - paragraph [ref=e417]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e418]:
+                        - paragraph [ref=e419]: ۴.۱
+                        - img [ref=e421]
+                    - generic [ref=e425]:
+                      - generic [ref=e426]: ۹۹۷,۷۵۰
+                      - img [ref=e428]
+            - link [ref=e431] [cursor=pointer]:
+              - /url: /product/dkp-14744575/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%A2%D9%84%D9%88%D8%A7-%D9%85%D8%AF%D9%84-ljc-197/
+              - article [ref=e433]:
+                - generic [ref=e438]:
+                  - generic "چراغ مطالعه آلوا مدل LJC-197" [ref=e443]
+                  - generic [ref=e448]:
+                    - heading "چراغ مطالعه آلوا مدل LJC-197" [level=3] [ref=e451]
+                    - generic [ref=e454]:
+                      - paragraph [ref=e455]: ۴.۴
+                      - img [ref=e457]
+                    - generic [ref=e459]:
+                      - generic [ref=e460]:
+                        - generic [ref=e462]: ۱۰٪
+                        - generic [ref=e463]:
+                          - generic [ref=e464]: ۱,۰۵۳,۰۰۰
+                          - img [ref=e466]
+                      - generic [ref=e469]: ۱,۱۷۰,۰۰۰
+            - link [ref=e471] [cursor=pointer]:
+              - /url: /product/dkp-300836/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%DA%A9%D8%AF-dl-113/
+              - article [ref=e473]:
+                - generic [ref=e476]:
+                  - generic [ref=e479]:
+                    - generic "چراغ مطالعه صنایع کریم زاده کد DL-113" [ref=e481]
+                    - img [ref=e489]
+                  - generic [ref=e491]:
+                    - heading "چراغ مطالعه صنایع کریم زاده کد DL-113" [level=3] [ref=e494]
+                    - generic [ref=e495]:
+                      - generic [ref=e496]:
+                        - img [ref=e498]
+                        - paragraph [ref=e500]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e501]:
+                        - paragraph [ref=e502]: ۴.۲
+                        - img [ref=e504]
+                    - generic [ref=e508]:
+                      - generic [ref=e509]: ۳۵۴,۹۰۰
+                      - img [ref=e511]
+            - link [ref=e514] [cursor=pointer]:
+              - /url: /product/dkp-20510571/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%D8%A7%D8%B1%DA%98%DB%8C-%D8%AF%D8%B1%DB%8C%D9%85-%D9%84%D8%A7%DB%8C%D8%AA-%D9%85%D8%AF%D9%84-dl-1990/
+              - article [ref=e516]:
+                - generic [ref=e521]:
+                  - generic "چراغ مطالعه شارژی دریم لایت مدل DL-1990" [ref=e526]
+                  - generic [ref=e531]:
+                    - heading "چراغ مطالعه شارژی دریم لایت مدل DL-1990" [level=3] [ref=e534]
+                    - generic [ref=e535]:
+                      - generic [ref=e536]:
+                        - img [ref=e538]
+                        - paragraph [ref=e540]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e541]:
+                        - paragraph [ref=e542]: ۴.۶
+                        - img [ref=e544]
+                    - generic [ref=e546]:
+                      - generic [ref=e547]:
+                        - generic [ref=e549]: ۱۰٪
+                        - generic [ref=e550]:
+                          - generic [ref=e551]: ۶۴۸,۰۰۰
+                          - img [ref=e553]
+                      - generic [ref=e556]: ۷۲۰,۰۰۰
+            - link [ref=e558] [cursor=pointer]:
+              - /url: /product/dkp-11328100/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%A8%D9%88%D8%B3%D8%AA%D8%A7%D9%86%DA%86%DB%8C-%D9%85%D8%AF%D9%84-dl-105/
+              - article [ref=e560]:
+                - generic [ref=e565]:
+                  - generic [ref=e568]:
+                    - generic "چراغ مطالعه بوستانچی مدل DL-105" [ref=e570]
+                    - img [ref=e578]
+                  - generic [ref=e580]:
+                    - heading "چراغ مطالعه بوستانچی مدل DL-105" [level=3] [ref=e583]
+                    - generic [ref=e584]:
+                      - generic [ref=e585]:
+                        - img [ref=e587]
+                        - paragraph [ref=e589]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e590]:
+                        - paragraph [ref=e591]: ۴.۴
+                        - img [ref=e593]
+                    - generic [ref=e595]:
+                      - generic [ref=e596]:
+                        - generic [ref=e598]: ۷٪
+                        - generic [ref=e599]:
+                          - generic [ref=e600]: ۳۰۶,۹۰۰
+                          - img [ref=e602]
+                      - generic [ref=e605]: ۳۳۰,۰۰۰
+            - link [ref=e607] [cursor=pointer]:
+              - /url: /product/dkp-17903883/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-slb2025/
+              - article [ref=e609]:
+                - generic [ref=e614]:
+                  - generic "چراغ مطالعه مدل SLB2025" [ref=e619]
+                  - generic [ref=e624]:
+                    - heading "چراغ مطالعه مدل SLB2025" [level=3] [ref=e627]
+                    - generic [ref=e628]:
+                      - paragraph [ref=e630]: تنها ۱ عدد در انبار باقی مانده
+                      - generic [ref=e631]:
+                        - paragraph [ref=e632]: ۳.۵
+                        - img [ref=e634]
+                    - generic [ref=e636]:
+                      - generic [ref=e637]:
+                        - generic [ref=e639]: ۱۵٪
+                        - generic [ref=e640]:
+                          - generic [ref=e641]: ۱,۵۶۷,۰۰۰
+                          - img [ref=e643]
+                      - generic [ref=e646]: ۱,۸۵۰,۰۰۰
+            - link [ref=e648] [cursor=pointer]:
+              - /url: /product/dkp-14350739/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%A8%D9%88%D8%B3%D8%AA%D8%A7%D9%86%DA%86%DB%8C-%D9%85%D8%AF%D9%84-en-101-%D8%B7%D8%B1%D8%AD-fb/
+              - article [ref=e650]:
+                - generic [ref=e653]:
+                  - generic [ref=e656]:
+                    - generic "چراغ مطالعه بوستانچی مدل EN-101 طرح FB" [ref=e658]
+                    - img [ref=e666]
+                  - generic [ref=e668]:
+                    - heading "چراغ مطالعه بوستانچی مدل EN-101 طرح FB" [level=3] [ref=e671]
+                    - generic [ref=e672]:
+                      - generic [ref=e673]:
+                        - img [ref=e675]
+                        - paragraph [ref=e677]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e678]:
+                        - paragraph [ref=e679]: ۳.۶
+                        - img [ref=e681]
+                    - generic [ref=e685]:
+                      - generic [ref=e686]: ۴۹۵,۰۰۰
+                      - img [ref=e688]
+            - link [ref=e691] [cursor=pointer]:
+              - /url: /product/dkp-15401784/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-%D8%AC%DB%8C%D8%A8%DB%8C-%DA%A9%D8%AF-403-2/
+              - article [ref=e693]:
+                - generic [ref=e696]:
+                  - generic "چراغ مطالعه مدل جیبی کد 403-3" [ref=e701]
+                  - generic [ref=e706]:
+                    - heading "چراغ مطالعه مدل جیبی کد 403-3" [level=3] [ref=e709]
+                    - generic [ref=e712]:
+                      - paragraph [ref=e713]: ۳.۴
+                      - img [ref=e715]
+                    - generic [ref=e719]:
+                      - generic [ref=e720]: ۳۲۰,۰۰۰
+                      - img [ref=e722]
+            - link [ref=e725] [cursor=pointer]:
+              - /url: /product/dkp-15928166/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B5%D9%86%D8%A7%DB%8C%D8%B9-%DA%A9%D8%B1%DB%8C%D9%85-%D8%B2%D8%A7%D8%AF%D9%87-%D9%85%D8%AF%D9%84-en-103/
+              - article [ref=e727]:
+                - generic [ref=e730]:
+                  - generic "چراغ مطالعه صنایع کریم زاده مدل EN - 103" [ref=e735]
+                  - generic [ref=e741]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل EN - 103" [level=3] [ref=e744]
+                    - generic [ref=e745]:
+                      - generic [ref=e746]:
+                        - img [ref=e748]
+                        - paragraph [ref=e750]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e751]:
+                        - paragraph [ref=e752]: ۴.۴
+                        - img [ref=e754]
+                    - generic [ref=e758]:
+                      - generic [ref=e759]: ۶۰۱,۷۰۰
+                      - img [ref=e761]
+            - link [ref=e764] [cursor=pointer]:
+              - /url: /product/dkp-5829467/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%A8%D9%88%D8%B3%D8%AA%D8%A7%D9%86%DA%86%DB%8C-%D9%85%D8%AF%D9%84-en-111/
+              - article [ref=e766]:
+                - generic [ref=e769]:
+                  - generic [ref=e772]:
+                    - generic "چراغ مطالعه صنایع کریم زاده مدل EN-111" [ref=e774]
+                    - img [ref=e782]
+                  - generic [ref=e784]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل EN-111" [level=3] [ref=e787]
+                    - generic [ref=e788]:
+                      - generic [ref=e789]:
+                        - img [ref=e791]
+                        - paragraph [ref=e793]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e794]:
+                        - paragraph [ref=e795]: ۴.۲
+                        - img [ref=e797]
+                    - generic [ref=e801]:
+                      - generic [ref=e802]: ۵۳۵,۰۰۰
+                      - img [ref=e804]
+            - link [ref=e807] [cursor=pointer]:
+              - /url: /product/dkp-101449/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-en-107a/
+              - article [ref=e809]:
+                - generic [ref=e812]:
+                  - generic "چراغ مطالعه صنایع کریم زاده مدل EN-107A" [ref=e817]
+                  - generic [ref=e822]:
+                    - heading "چراغ مطالعه صنایع کریم زاده مدل EN-107A" [level=3] [ref=e825]
+                    - generic [ref=e826]:
+                      - generic [ref=e827]:
+                        - img [ref=e829]
+                        - paragraph [ref=e831]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e832]:
+                        - paragraph [ref=e833]: ۴
+                        - img [ref=e835]
+                    - generic [ref=e839]:
+                      - generic [ref=e840]: ۹۶۴,۶۶۰
+                      - img [ref=e842]
+            - link [ref=e845] [cursor=pointer]:
+              - /url: /product/dkp-20950804/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%D8%A7%D8%B1%DA%98%DB%8C-%D9%85%D8%AF%D9%84-%D9%85%D9%84%D9%88%D8%AF%DB%8C-%D8%AC%D8%A7%D9%82%D9%84%D9%85%DB%8C-%D8%AF%D8%A7%D8%B1/
+              - article [ref=e847]:
+                - generic [ref=e852]:
+                  - generic "چراغ مطالعه شارژی مدل ملودی جاقلمی دار" [ref=e857]
+                  - generic [ref=e863]:
+                    - heading "چراغ مطالعه شارژی مدل ملودی جاقلمی دار" [level=3] [ref=e866]
+                    - generic [ref=e867]:
+                      - generic [ref=e868]:
+                        - img [ref=e870]
+                        - paragraph [ref=e872]: ارسال سریع دیجی‌کالا
+                      - generic [ref=e873]:
+                        - paragraph [ref=e874]: ۴
+                        - img [ref=e876]
+                    - generic [ref=e878]:
+                      - generic [ref=e879]:
+                        - generic [ref=e881]: ۲۰٪
+                        - generic [ref=e882]:
+                          - generic [ref=e883]: ۳۴۳,۲۰۰
+                          - img [ref=e885]
+                      - generic [ref=e888]: ۴۲۹,۰۰۰
+            - link [ref=e890] [cursor=pointer]:
+              - /url: /product/dkp-7104273/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D9%85%D8%AF%D9%84-dl-113/
+              - article [ref=e892]:
+                - generic [ref=e895]:
+                  - generic [ref=e898]:
+                    - generic "چراغ مطالعه مدل DL-113" [ref=e900]
+                    - img [ref=e908]
+                  - generic [ref=e910]:
+                    - heading "چراغ مطالعه مدل DL-113" [level=3] [ref=e913]
+                    - generic [ref=e914]:
+                      - paragraph [ref=e916]: تنها ۱ عدد در انبار باقی مانده
+                      - generic [ref=e917]:
+                        - paragraph [ref=e918]: ۴.۴
+                        - img [ref=e920]
+                    - generic [ref=e924]:
+                      - generic [ref=e925]: ۳۲۴,۰۰۰
+                      - img [ref=e927]
+            - link [ref=e930] [cursor=pointer]:
+              - /url: /product/dkp-15243288/%DA%86%D8%B1%D8%A7%D8%BA-%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87-%D8%B4%DB%8C%D8%A7%D8%A6%D9%88%D9%85%DB%8C-%D9%85%D8%AF%D9%84-9290029114/
+              - article [ref=e932]:
+                - generic [ref=e937]:
+                  - generic "چراغ مطالعه شیائومی مدل 9290029114" [ref=e942]
+                  - generic [ref=e947]:
+                    - heading "چراغ مطالعه شیائومی مدل 9290029114" [level=3] [ref=e950]
+                    - generic [ref=e951]:
+                      - paragraph [ref=e953]: تنها ۱ عدد در انبار باقی مانده
+                      - generic [ref=e954]:
+                        - paragraph [ref=e955]: ۴.۸
+                        - img [ref=e957]
+                    - generic [ref=e959]:
+                      - generic [ref=e960]:
+                        - generic [ref=e962]: ۳۱٪
+                        - generic [ref=e963]:
+                          - generic [ref=e964]: ۳,۵۰۰,۰۰۰
+                          - img [ref=e966]
+                      - generic [ref=e969]: ۵,۱۰۰,۰۰۰
+            - img "Loading..." [ref=e972] [cursor=pointer]
+            - img "Loading..." [ref=e975] [cursor=pointer]
+            - img "Loading..." [ref=e978] [cursor=pointer]
+            - img "Loading..." [ref=e981] [cursor=pointer]
+            - img "Loading..." [ref=e984] [cursor=pointer]
+        - generic [ref=e985]:
+          - generic [ref=e986]:
+            - generic [ref=e987]: جستجو‌های مرتبط
+            - link "پنل مطالعه" [ref=e989] [cursor=pointer]:
+              - /url: /search/?q=%D9%BE%D9%86%D9%84%20%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87
+              - img [ref=e991]
+              - generic [ref=e993]: پنل مطالعه
+              - img [ref=e995]
+            - link "چراغ مطالعه گیره ای" [ref=e998] [cursor=pointer]:
+              - /url: /search/?q=%DA%86%D8%B1%D8%A7%D8%BA%20%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87%20%DA%AF%DB%8C%D8%B1%D9%87%20%D8%A7%DB%8C
+              - img [ref=e1000]
+              - generic [ref=e1002]: چراغ مطالعه گیره ای
+              - img [ref=e1004]
+            - link "چراغ خواب" [ref=e1007] [cursor=pointer]:
+              - /url: /search/?q=%DA%86%D8%B1%D8%A7%D8%BA%20%D8%AE%D9%88%D8%A7%D8%A8
+              - img [ref=e1009]
+              - generic [ref=e1011]: چراغ خواب
+              - img [ref=e1013]
+            - link "چراغ مطالعه شارژی" [ref=e1016] [cursor=pointer]:
+              - /url: /search/?q=%DA%86%D8%B1%D8%A7%D8%BA%20%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87%20%D8%B4%D8%A7%D8%B1%DA%98%DB%8C
+              - img [ref=e1018]
+              - generic [ref=e1020]: چراغ مطالعه شارژی
+              - img [ref=e1022]
+            - link "چراغ مطالعه کودک" [ref=e1025] [cursor=pointer]:
+              - /url: /search/?q=%DA%86%D8%B1%D8%A7%D8%BA%20%D9%85%D8%B7%D8%A7%D9%84%D8%B9%D9%87%20%DA%A9%D9%88%D8%AF%DA%A9
+              - img [ref=e1027]
+              - generic [ref=e1029]: چراغ مطالعه کودک
+              - img [ref=e1031]
+          - generic [ref=e1035]:
+            - generic [ref=e1038]: فیلترها
+            - generic [ref=e1043] [cursor=pointer]:
+              - generic [ref=e1044]: محدوده قیمت
+              - img [ref=e1046]
+            - generic [ref=e1052] [cursor=pointer]:
+              - generic [ref=e1053]: برند
+              - img [ref=e1055]
+            - generic [ref=e1061] [cursor=pointer]:
+              - generic [ref=e1062]: رنگ
+              - img [ref=e1064]
+            - generic [ref=e1072] [cursor=pointer]: ارسال سریع
+            - generic [ref=e1083] [cursor=pointer]:
+              - generic [ref=e1084]: منبع انرژی
+              - img [ref=e1086]
+            - generic [ref=e1092] [cursor=pointer]:
+              - generic [ref=e1093]: مناسب برای
+              - img [ref=e1095]
+            - generic [ref=e1101] [cursor=pointer]:
+              - generic [ref=e1102]: نوع چراغ مطالعه
+              - img [ref=e1104]
+            - generic [ref=e1110] [cursor=pointer]:
+              - generic [ref=e1111]: قابلیت‌ها
+              - img [ref=e1113]
+            - generic [ref=e1119] [cursor=pointer]:
+              - generic [ref=e1120]: نوع لامپ سازگار با محصول
+              - img [ref=e1122]
+            - generic [ref=e1128] [cursor=pointer]:
+              - generic [ref=e1129]: جنس بدنه
+              - img [ref=e1131]
+            - generic [ref=e1137] [cursor=pointer]:
+              - generic [ref=e1138]: نوع گردنی
+              - img [ref=e1140]
+            - generic [ref=e1146] [cursor=pointer]:
+              - generic [ref=e1147]: تعداد لامپ قابل استفاده
+              - img [ref=e1149]
+            - generic [ref=e1155] [cursor=pointer]:
+              - generic [ref=e1156]: جنس گردنی
+              - img [ref=e1158]
+            - generic [ref=e1164] [cursor=pointer]:
+              - generic [ref=e1165]: نوع حباب
+              - img [ref=e1167]
+            - generic [ref=e1175] [cursor=pointer]: فقط کالاهای موجود در انبار دیجی‌کالا
+            - generic [ref=e1182]:
+              - generic [ref=e1185] [cursor=pointer]: ارسال فروشنده
+              - generic [ref=e1192]: ارسال مستقیم و سریع‌تر
+            - generic [ref=e1197] [cursor=pointer]:
+              - generic [ref=e1198]: نوع فروشنده
+              - img [ref=e1200]
+      - button [ref=e1203] [cursor=pointer]:
+        - img [ref=e1206]
+    - contentinfo [ref=e1208]:
+      - generic [ref=e1210]:
+        - generic [ref=e1211]:
+          - generic "digikala - دیجی کالا" [ref=e1212]:
+            - img "digikala - دیجی کالا" [ref=e1213]
+          - button "بازگشت به بالا" [ref=e1214] [cursor=pointer]:
+            - generic [ref=e1215]:
+              - generic [ref=e1216]: بازگشت به بالا
+              - img [ref=e1218]
+        - generic [ref=e1220]:
+          - paragraph [ref=e1221]: تلفن پشتیبانی ۶۱۹۳۰۰۰۰ - ۰۲۱
+          - generic [ref=e1222]: "|"
+          - paragraph [ref=e1223]: ۰۲۱-۹۱۰۰۰۱۰۰
+          - generic [ref=e1224]: "|"
+          - paragraph [ref=e1225]: ۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم
+        - generic [ref=e1226]:
+          - link "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e1227] [cursor=pointer]:
+            - /url: /faq/question/79/
+            - generic "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e1228]:
+              - img "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e1229]
+            - paragraph [ref=e1230]: اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس
+          - link "امکان پرداخت در محل امکان پرداخت در محل" [ref=e1231] [cursor=pointer]:
+            - /url: /faq/question/81/
+            - generic "امکان پرداخت در محل" [ref=e1232]:
+              - img "امکان پرداخت در محل" [ref=e1233]
+            - paragraph [ref=e1234]: امکان پرداخت در محل
+          - link "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ ۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e1235] [cursor=pointer]:
+            - /url: /page/contact-us/
+            - generic "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e1236]:
+              - img "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e1237]
+            - paragraph [ref=e1238]: ۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ
+          - link "هفت روز ضمانت بازگشت کالا هفت روز ضمانت بازگشت کالا" [ref=e1239] [cursor=pointer]:
+            - /url: /faq/question/83/
+            - generic "هفت روز ضمانت بازگشت کالا" [ref=e1240]:
+              - img "هفت روز ضمانت بازگشت کالا" [ref=e1241]
+            - paragraph [ref=e1242]: هفت روز ضمانت بازگشت کالا
+          - link "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e1243] [cursor=pointer]:
+            - /url: /faq/question/82/
+            - generic "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e1244]:
+              - img "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e1245]
+            - paragraph [ref=e1246]: ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ
+        - generic [ref=e1247]:
+          - generic [ref=e1248]:
+            - paragraph [ref=e1249]: با دیجی‌کالا
+            - link "اتاق خبر دیجی‌کالا" [ref=e1250] [cursor=pointer]:
+              - /url: https://about.digikala.com/newsroom/
+            - link "فروش در دیجی‌کالا" [ref=e1251] [cursor=pointer]:
+              - /url: /landings/seller-introduction/
+            - link "فرصت‌های شغلی" [ref=e1252] [cursor=pointer]:
+              - /url: https://careers.digikala.com/
+            - link "گزارش تخلف در دیجی‌کالا" [ref=e1253] [cursor=pointer]:
+              - /url: https://digikalagroup-rac.com/portal/go/External-cases
+            - link "تماس با دیجی‌کالا" [ref=e1254] [cursor=pointer]:
+              - /url: /page/contact-us/
+            - link "درباره دیجی‌کالا" [ref=e1255] [cursor=pointer]:
+              - /url: https://about.digikala.com/
+          - generic [ref=e1256]:
+            - paragraph [ref=e1257]: خدمات مشتریان
+            - link "پاسخ به پرسش‌های متداول" [ref=e1258] [cursor=pointer]:
+              - /url: /faq/
+            - link "رویه‌های بازگرداندن کالا" [ref=e1259] [cursor=pointer]:
+              - /url: /faq/question/83/
+            - link "شرایط استفاده" [ref=e1260] [cursor=pointer]:
+              - /url: /page/terms/
+            - link "حریم خصوصی" [ref=e1261] [cursor=pointer]:
+              - /url: /page/privacy/
+            - link "گزارش باگ" [ref=e1262] [cursor=pointer]:
+              - /url: /page/bug-report/
+          - generic [ref=e1263]:
+            - paragraph [ref=e1264]: راهنمای خرید از دیجی‌کالا
+            - link "نحوه ثبت سفارش" [ref=e1265] [cursor=pointer]:
+              - /url: /faq/question/649/
+            - link "رویه ارسال سفارش" [ref=e1266] [cursor=pointer]:
+              - /url: /faq/question/79/
+            - link "شیوه‌های پرداخت" [ref=e1267] [cursor=pointer]:
+              - /url: /faq/question/81/
+          - generic [ref=e1268]:
+            - generic [ref=e1269]:
+              - heading "همراه ما باشید!" [level=4] [ref=e1270]
+              - generic [ref=e1271]:
+                - link [ref=e1272] [cursor=pointer]:
+                  - /url: https://www.instagram.com/digikalacom/
+                  - img [ref=e1274]
+                - link [ref=e1276] [cursor=pointer]:
+                  - /url: https://twitter.com/digikalacom
+                  - img [ref=e1278]
+                - link [ref=e1280] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/digikala/mycompany/
+                  - img [ref=e1282]
+                - link [ref=e1284] [cursor=pointer]:
+                  - /url: https://www.aparat.com/digikala/
+                  - img [ref=e1286]
+            - generic [ref=e1288]:
+              - heading "با ثبت ایمیل، از جدید‌ترین تخفیف‌ها با‌خبر شوید" [level=4] [ref=e1289]
+              - generic [ref=e1291]:
+                - textbox [ref=e1295]:
+                  - /placeholder: ایمیل شما
+                - button "ثبت":
+                  - generic: ثبت
+        - generic [ref=e1296]:
+          - generic [ref=e1297]:
+            - generic "دیجی‌کالا" [ref=e1298]
+            - generic [ref=e1301]: دانلود اپلیکیشن دیجی‌کالا
+          - generic [ref=e1302]:
+            - generic [ref=e1303]:
+              - link "دریافت از کافه‌بازار" [ref=e1304] [cursor=pointer]:
+                - /url: https://click.adtrace.io/d5wyajq
+                - generic "دریافت از کافه‌بازار" [ref=e1305]
+              - link "دریافت از مایکت" [ref=e1307] [cursor=pointer]:
+                - /url: https://click.adtrace.io/y9sit74
+                - generic "دریافت از مایکت" [ref=e1308]
+              - link "دریافت از سیب‌اپ" [ref=e1310] [cursor=pointer]:
+                - /url: https://click.adtrace.io/56hqs7k
+                - generic "دریافت از سیب‌اپ" [ref=e1311]
+            - link [ref=e1313] [cursor=pointer]:
+              - /url: /landings/new-app/
+        - generic [ref=e1316]:
+          - generic [ref=e1317]:
+            - generic [ref=e1318]:
+              - heading "دیجی کالا؛ بزرگترین فروشگاه اینترنتی ایران" [level=1] [ref=e1319]
+              - paragraph [ref=e1320]: دیجی کالا سال‌ها است که به انتخاب اول بسیاری از خریداران اینترنتی تبدیل شده است. دیجی کالا به عنوان بزرگ‌ترین و معتبرترین فروشگاه آنلاین ایران، شناخته‌شده‌ترین فروشگاه نیز محسوب می‌شود. این فروشگاه آنلاین نه‌تنها گسترده‌ترین تنوع کالا را در دسته‌بندی‌های مختلف ارائه می‌دهد، بلکه با خدمات بی‌نظیر، ارسال سریع، ضمانت اصل بودن کالا و پشتیبانی حرفه‌ای، استاندارد جدیدی در خرید اینترنتی ایران تعریف کرده است. این فروشگاه با سال‌ها تجربه و اعتماد مشتریان، کامل‌ترین و بهترین گزینه برای خرید آنلاین در ایران محسوب می‌شود.
+              - heading "ویژگی های مهم دیجی کالا" [level=2] [ref=e1321]
+              - paragraph [ref=e1322]:
+                - text: یکی از ویژگی‌های مهم در خرید از دیجی کالا، تنوع بی‌نظیر محصولات است. این فروشگاه اینترنتی طیف وسیعی از کالاها را در دسته‌های مختلف از جمله لوازم دیجیتال، لوازم خانگی، مد و پوشاک، لوازم آرایشی و بهداشتی، محصولات سلامت و زیبایی، و بسیاری از محصولات دیگر ارائه می‌دهد. به عنوان مثال، اگر به دنبال خرید یا بررسی
+                - link "قیمت گوشی" [ref=e1323] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-mobile-phone/
+                - text: باشید، دیجی کالا مجموعه‌ای از بهترین گوشی‌ها از برندهای معتبر اپل و سامسونگ مانند
+                - link "آیفون ۱۷" [ref=e1324] [cursor=pointer]:
+                  - /url: https://www.digikala.com/tags/iphone-17/
+                - text: ،
+                - link "گوشی S25" [ref=e1325] [cursor=pointer]:
+                  - /url: https://www.digikala.com/tags/samsung-s25/
+                - text: ، گوشی‌های مختلف از برند شیائومی مانند
+                - link "شیائومی نوت ۱۴" [ref=e1326] [cursor=pointer]:
+                  - /url: https://www.digikala.com/product/dkp-17580036/%DA%AF%D9%88%D8%B4%DB%8C-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D8%B4%DB%8C%D8%A7%D8%A6%D9%88%D9%85%DB%8C-%D9%85%D8%AF%D9%84-redmi-note-14-4g-%D8%AF%D9%88-%D8%B3%DB%8C%D9%85-%DA%A9%D8%A7%D8%B1%D8%AA-%D8%B8%D8%B1%D9%81%DB%8C%D8%AA-256-%DA%AF%DB%8C%DA%AF%D8%A7%D8%A8%D8%A7%DB%8C%D8%AA-%D9%88-%D8%B1%D9%85-8-%DA%AF%DB%8C%DA%AF%D8%A7%D8%A8%D8%A7%DB%8C%D8%AA
+                - text: و بسیاری از برندهای دیگر را در اختیار شما قرار می‌دهد. همچنین برای علاقه‌مندان به لوازم دیجیتال، این فروشگاه اینترنتی انواع لپ تاپ،
+                - link "تلویزیون" [ref=e1327] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-tv2/
+                - text: ،
+                - link "اسپیکر" [ref=e1328] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-speaker/
+                - text: ، و هندزفری بلوتوثی با کیفیت بالا را برای خرید آنلاین ارائه می‌دهد. دیجی کالا، مقصدی بی‌پایان برای خرید آسان، سریع و مطمئن است. راهی که هر آنچه نیاز دارید از
+                - link "قیمت لپ تاپ" [ref=e1329] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-notebook-netbook-ultrabook/
+                - text: تا یک ایرپاد مطمئن را در اختیار شما قرار می‌دهد.
+              - heading "ارسال سریع و مطمئن کالا" [level=3] [ref=e1330]
+              - paragraph [ref=e1331]: یکی از مهم‌ترین دغدغه‌های کاربران خرید آنلاین، زمان تحویل کالا است. دیجی کالا برای حل این مشکل، گزینه‌های مختلف ارسال را در نظر گرفته است تا کاربران بتوانند بر اساس نیاز خود، روش ارسال مناسب را انتخاب کنند. به عنوان مثال، ارسال کالا به صورت تحویل امروز با ارسال سریع دیجی‌کالا، از جمله روش‌های خرید سریع از این فروشگاه اینترنتی است. این امکانات باعث می‌شود که خریداران بتوانند سفارش خود را در کوتاه‌ترین زمان ممکن دریافت کنند. علاوه بر این، در صورتی که کالای خریداری شده از لحاظ کیفیت یا هر دلیل دیگری رضایت مشتری را جلب نکرده باشد، دیجی کالا ضمانت بازگشت کالا را ارائه می‌دهد. این ویژگی موجب اعتماد بیشتر مشتریان به خرید آنلاین از فروشگاه اینترنتی دیجی کالا شده است.
+              - heading "تخفیف های ویژه و جشنواره ها" [level=3] [ref=e1332]
+              - paragraph [ref=e1333]:
+                - text: دیجی کالا به طور منظم جشنواره‌ها و تخفیف‌های ویژه‌ای را برگزار می‌کند که برای مشتریان فرصت خرید کالاهای باکیفیت با قیمت‌های مناسب به همراه خواهد داشت. این تخفیف‌ها در ایام خاص مانند
+                - link "بلک فرایدی" [ref=e1334] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/black-friday/
+                - text: یا همان حراج جمعه سیاه،
+                - link "خرید هدیه روز مادر" [ref=e1335] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/mothersday/
+                - text: و
+                - link "کادو روز پدر" [ref=e1336] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/fathersday/
+                - text: ، شب یلدا و جشنواره‌های فصلی تابستان و زمستان توجه بسیاری از خریداران را جلب می‌کند. در این جشنواره‌ها، دیجی کالا تخفیف‌های عالی روی محصولات مختلف از جمله گوشی‌های موبایل، لپ تاپ‌ها، تلویزیون‌ها، و حتی محصولات مناسب سازمانی مثل
+                - link "پک هدیه یلدا" [ref=e1337] [cursor=pointer]:
+                  - /url: https://www.digikala.com/tags/yalda-night-gift/
+                - text: ارائه می‌دهد. می‌توانید گوشی
+                - link "ایفون ۱۶" [ref=e1338] [cursor=pointer]:
+                  - /url: https://www.digikala.com/tags/iphone-16/
+                - text: یا گوشی S25 را با تخفیف‌های ویژه خریداری کنید و از قیمت مناسب بهره‌مند شوید. دیجی کالا فراتر از یک فروشگاه اینترنتی، یک تجربه خرید مطمئن در بین کاربران مختلف بوده است که با ارائه بزرگ‌ترین تنوع کالا، قیمت‌های مختلف و خدماتی بی‌نقص، به مقصد اول خریداران آنلاین در ایران تبدیل شده است.
+              - heading "انواع محصولات فروشگاه دیجی کالا" [level=2] [ref=e1339]
+              - paragraph [ref=e1340]:
+                - text: دیجی کالا دارای محصولات متنوعی در گروه‌های مختلف است که خرید آنها بسیار راحت و سریع است. به عنوان مثال، اگر به دنبال
+                - link "قاب گوشی" [ref=e1341] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-cell-phone-pouch-cover/
+                - text: یا
+                - link "هندزفری بلوتوثی" [ref=e1342] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-headphone/
+                - text: باشید، می‌توانید مدل‌های مختلف و برندهای گوناگونی را در این فروشگاه پیدا کنید.
+              - heading "موبایل و کالای دیجیتال" [level=3] [ref=e1343]
+              - paragraph [ref=e1344]:
+                - text: دیجی‌کالا انواع گوشی‌های هوشمند از برندهای معتبر جهانی مانند سامسونگ، اپل، شیائومی و هواوی را با مشخصات و قیمت‌های متنوع عرضه می‌کند. علاوه بر موبایل، دیجی‌کالا مجموعه‌ای از لوازم جانبی مانند هدفون، هندزفری، ساعت‌های هوشمند، تبلت‌ها و لپ تاپ را نیز در اختیار مشتریان قرار می‌دهد. با امکان مقایسه محصولات، مطالعه نظرات کاربران و دسترسی به جدیدترین مدل‌ها، دیجی‌کالا به یکی از مقاصد اصلی خرید آنلاین در حوزه موبایل و کالای دیجیتال تبدیل شده است. از دهه گذشته همواره دیجی کالا به عنوان اولین گزینه برای
+                - link "خرید گوشی های سامسونگ" [ref=e1345] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-mobile-phone/samsung/
+                - text: ، آیفون های اپل و
+                - link "گوشی شیائومی" [ref=e1346] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-mobile-phone/xiaomi/
+                - text: محسوب می‌شده است و تا امروز هم در عرضه این موبایل های محبوب به بازار، دیجی‌کالا اولین فروشگاه آنلاین بوده است.
+              - heading "کتاب و لوازم تحریر" [level=3] [ref=e1347]
+              - paragraph [ref=e1348]:
+                - text: کتاب،
+                - link "لوازم تحریر" [ref=e1349] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-stationery/
+                - text: و هنر در دیجی کالا یک مجموعه بی‌نظیر از محصولات فرهنگی و هنری است که به علاقه‌مندان به کتابخوانی، هنر و نوشتن کمک می‌کند تا دنیای خود را گسترش دهند. از کتاب‌های چاپی و کتاب‌های صوتی گرفته تا مجلات خارجی و داخلی و آثار معروف‌ترین نویسندگان مثل سعدی، حافظ، مولانا و فروغ فرخزاد، تمامی نیازهای کتابخوان‌ها را پوشش می‌دهد. همچنین با مجموعه‌ای از لوازم تحریر، ابزار نقاشی و رنگ‌آمیزی، آلبوم‌های عکس و فرش‌های دستبافت، به شما این امکان را می‌دهد تا دنیای هنر و خلاقیت خود را به بهترین نحو پرورش دهید. همچنین خر سال تقریبا همزمان با تهران و نمایشگاه بین المللی کتاب، دیجی کالا نمایشگاه مجازی کتاب خود را برگزار می‌کند تا آنها که فرصت حضور در نمایشگاه را ندارند، بتوانند مجازی از کتاب ها بازدید و خرید کنند.
+              - heading "لوازم آرایشی و بهداشتی" [level=3] [ref=e1350]
+              - paragraph [ref=e1351]:
+                - text: در دسته محصولات آرایشی و بهداشتی، دیجی کالا مجموعه‌ای از بهترین و پرطرفدارترین برندهای جهانی را در اختیار کاربران قرار می‌دهد. محصولات متنوعی همچون
+                - link "مرطوب كننده‌ها" [ref=e1352] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-moisturizing-cream/
+                - text: ،
+                - link "كرم پودر" [ref=e1353] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-foundation/
+                - text: ،
+                - link "ضدآفتاب" [ref=e1354] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-sunscreen-cream/
+                - text: ، ريمل و
+                - link "رژلب" [ref=e1355] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-lipstick/
+                - text: از برندهایی مانند لورال، کلینیک و میبلین در دیجی کالا موجود هستند که برای هر سلیقه و نیاز قابل انتخاب هستند. علاوه بر این، شما می‌توانید محصولات مراقبت از پوست و مو مانند شامپو، کرم‌های ضد چروک و ماسک صورت را در این فروشگاه بیابید و خرید آنلاین خود را به راحتی انجام دهید. دیجی کالا، بزرگ‌ترین و معتبرترین فروشگاه آنلاین لوازم آرایشی ایران، جایی که تنوع، کیفیت و اطمینان در خرید یکجا جمع شده‌اند.
+              - heading "خرید آنلاین طلا و جواهرات" [level=3] [ref=e1356]
+              - paragraph [ref=e1357]:
+                - text: دیجی کالا به عنوان بزرگترین فروشگاه اینترنتی ایران، یکی از بهترین گزینه‌ها برای
+                - link "خرید طلا" [ref=e1358] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/gold-jwelery-category-page/
+                - text: و جواهرات آنلاین است. شما می‌توانید
+                - link "خريد گردنبند طلا" [ref=e1359] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-women-gold-necklace/
+                - text: ، انگشتر طلا، گوشواره زنانه طلا و
+                - link "دستبند طلا" [ref=e1360] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-women-gold-bracelet/
+                - text: را با بهترین
+                - link "قیمت‌ طلا" [ref=e1361] [cursor=pointer]:
+                  - /url: https://www.digikala.com/wealth/landing/digital-gold/
+                - text: از دیجی کالا انجام دهید. این فروشگاه مجموعه‌ای از بهترین برندهای طلا و جواهرات را در اختیار مشتریان قرار داده است که انتخاب خرید را برای آنها بسیار آسان می‌کند. همچنین می‌توانید
+                - link "خريد سكه" [ref=e1362] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-gold-coin/
+                - text: ، و حتی ربع سكه را نیز از این فروشگاه با راحت‌ترین روش انجام دهید.
+              - heading "اسباب بازی" [level=3] [ref=e1363]
+              - paragraph [ref=e1364]: این قسمت شامل تمامی نیازهای ضروری برای مراقبت، بهداشت، سرگرمی و راحتی کودک از بدو تولد تا دوران کودکی است. از لوازم بهداشت و حمام کودک و نوزاد مانند پوشک، دستمال مرطوب، شامپو کودک، حوله و وان حمام نوزاد گرفته تا محصولات ویژه‌ای مثل مینی واش و شامپو کودک و نوزاد، همه در این مجموعه موجود هستند. همچنین برای راحتی بیشتر، انواع پوشاک و کفش کودک و نوزاد از لباس نوزادی تا کفش پسرانه، کوله پشتی پسرانه، لباس دخترانه و کفش دخترانه به صورت آنلاین در دسترس شما قرار دارند.
+              - paragraph [ref=e1365]: کودکان به سرگرمی‌های ویژه نیاز دارند، از همین رو دیجی کالا مجموعه‌ای کامل از اسباب بازی‌ها از جمله پازل‌ها، لگو و ساختنی‌ها، عروسک‌ها، فیگورها و اسپینر‌ها را به شما ارائه می‌دهد.
+              - heading "لوازم خانگی و مبلمان" [level=3] [ref=e1366]
+              - paragraph [ref=e1367]:
+                - text: در دسته‌بندی لوازم خانگی، دیجی کالا محصولات متنوعی را ارائه می‌دهد که برای راحتی و زیبایی خانه و آشپزخانه شما طراحی شده‌اند. از جمله
+                - link "مبل راحتی" [ref=e1368] [cursor=pointer]:
+                  - /url: https://www.digikala.com/tags/sofa/
+                - text: ، سرویس‌های خواب، آینه‌های دکوراتیو، و ظروف آشپزخانه که همگی از برندهای معتبر و با کیفیت تولید شده‌اند. شما می‌توانید
+                - link "قابلمه و تابه" [ref=e1369] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-pots-pans/
+                - text: ، یخچال، ماشین لباسشویی و بسیاری از لوازم خانگی دیگر را از دیجی کالا خریداری کنید.
+              - paragraph [ref=e1370]:
+                - text: مبل‌های راحتی یکی از پرطرفدارترین محصولات خانگی در دیجی کالا هستند. این
+                - link "مبل‌ها" [ref=e1371] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-sofa/
+                - text: در انواع طرح‌ها و رنگ‌ها و از برندهای معتبر ساخته شده‌اند که با هر دکوراسیونی هماهنگ می‌شوند. همچنین در دیجی کالا انواع
+                - link "سرویس خواب" [ref=e1372] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-bed/
+                - text: با کیفیت بالا و طراحی روز دنیا در دسترس است. علاوه بر این، اگر به دنبال
+                - link "آینه دکوراتیو" [ref=e1373] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-decorative-mirror/
+                - text: یا سایر لوازم تزئینی منزل هستید، این فروشگاه بهترین انتخاب‌ها را به شما ارائه می‌دهد.
+              - heading "سوپرمارکت دیجی کالا" [level=3] [ref=e1374]
+              - paragraph [ref=e1375]:
+                - text: در دسته‌بندی خوراکی‌ها و کالاهای اساسی دیجی کالا، شما می‌توانید انواع محصولات ضروری و پرمصرف روزانه خود را پیدا کنید. از شیرینی و آجیل تا نان تازه و نبات خوشمزه گرفته و رب گوجه، ماکارونی، قند، رب انار، برنج و شکر و حتی شیر و
+                - link "لبنیات" [ref=e1376] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-dairy/
+                - text: همه این محصولات با بالاترین کیفیت و از برندهای معتبر در دسترس شما قرار دارند. این مجموعه شامل همه آن چیزی است که برای تهیه یک وعده غذایی کامل و سالم به آن نیاز دارید. خرید از
+                - link "سوپر مارکت آنلاین" [ref=e1377] [cursor=pointer]:
+                  - /url: https://www.digikala.com/main/food-beverage/
+                - text: کمک می‌کند که به راحتی و در کمترین زمان ممکن، مواد اولیه مورد نیاز خود را با قیمت‌های مناسب و با تضمین کیفیت دریافت کنید.
+              - heading "محصولات بومی و محلی" [level=3] [ref=e1378]
+              - paragraph [ref=e1379]: در این بخش از دیجی کالا، از برنج، روغن، عسل طبیعی، حلوا شکری، ارده و کنجد سنتی گرفته تا کیک و شیرینی خانگی، لواشک، برگه و آلوچه خانگی، محصولات اصیل و با کیفیت ارائه می‌شود. همچنین، انواع لبنیات سنتی، کره گیاهی و حیوانی محلی، خرمای محلی و خشکبار و آجیل سنتی به همراه غلات و حبوبات ارگانیک، ادویه‌ها و چاشنی‌های ارگانیک نظیر زعفران و زرشک ارگانیک از دیگر گزینه‌های این دسته هستند. برای علاقه‌مندان به دکوراسیون سنتی نیز، محصولاتی مانند لوستر دست ساز، مجسمه‌های سنتی، گلدان و تابلو سنتی، کاشی و آینه سنتی و ظروف آشپزخانه دست ساز از جنس سنتی وجود دارد که خانه شما را به محیطی گرم و اصیل تبدیل خواهد کرد.
+              - heading "ابزار آلات و تجهیزات" [level=3] [ref=e1380]
+              - paragraph [ref=e1381]: این بخش شامل ابزار برقی و غیر برقی در دیجی کالا مجموعه‌ای کامل از ابزارهای مورد نیاز برای پروژه‌های صنعتی، تعمیرات و ساخت می‌شود. از ابزارهای برقی مانند دریل، پیچ گوشتی، فرز، سنگ رومیزی، موتور برق و مکنده-دمنده گرفته تا ابزارهای غیر برقی مثل ابزار دستی، نردبان، اره و مجموعه ابزار، این دسته برای هر نیازی ابزار مناسب را ارائه می‌دهد. همچنین کمپرسور هوا، دستگاه جوش، هویه و ابزار برش و تراشکاری برای انجام کارهای دقیق صنعتی موجود است. به‌علاوه انواع لوازم روانکاری، چسب صنعتی، پیچ و مهره، ماسک تنفسی، لوازم ایمنی و کار و شیرآلات به تکمیل نیازهای شما برای کارهای ساختمانی و صنعتی کمک می‌کند. دیجی کالا یک راهکار کامل برای پروژه‌های حرفه‌ای و خانگی است.
+              - heading "پوشاک" [level=3] [ref=e1382]
+              - paragraph [ref=e1383]:
+                - text: از لباس‌های مردانه شامل هودی، سویشرت، ژاکت، پیراهن، شلوار جین، پالتو، کاپشن، کفش و اکسسوری تا پوشاک زنانه نظیر مانتو، بلوز، تیشرت، لباس مجلسی، لباس خواب، کاپشن و کفش زنانه، همگی در این دسته‌بندی موجود هستند. همچنین برای بچگانه‌ها، از لباس‌های راحتی و خواب، پوشاک ورزشی تا کفش و صندل بچگانه، به‌راحتی می‌توانید کالای مناسب را پیدا کنید. این بخش شامل برندهای معتبر مانند هامتو، چرم مشهد، اسمارا، کروم، گردیه و چرم عطارد است که پوشاک با کیفیت بالا را ارائه می‌دهند.
+                - link "خرید آنلاین لباس" [ref=e1384] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/apparel/
+                - text: از دیجی کالا فرصتی برای همه فروشنده های شناخته شده کشور فراهم کرده است تا فروش اینترنتی بیشتری را تجربه کنند. همچنین شما کاربران می‌توانید طیف وسیعی از پوشاک و
+                - link "انواع ساعت برند" [ref=e1385] [cursor=pointer]:
+                  - /url: https://www.digikala.com/landing/watches/
+                - text: را به راحتی و از طریق پروفایل همیشگی خود در Digikala خریداری کنید.
+              - heading "تجهیزات پزشکی و سلامت" [level=3] [ref=e1386]
+              - paragraph [ref=e1387]: در این بخش از تجهیزات پزشکی مانند فشارسنج، ترازو، تب سنج و دماسنج گرفته تا دستگاه‌های تنفسی و تجهیزات حرفه‌ای پزشکی، موجود هستند. برای کنترل بیماری‌هایی مانند دیابت و سرماخوردگی، محصولات مناسبی از جمله کیسه نمک، رطوبت‌گیر، و دستگاه‌های تب سنج ارائه می‌شود. علاوه بر این، ماساژور و پد و کیسه آب گرم به شما کمک می‌کنند تا در خانه از تسکین درد و آرامش بیشتری برخوردار شوید.
+              - heading "محصولات ورزشی و سفر" [level=3] [ref=e1388]
+              - paragraph [ref=e1389]: دیجی کالا همچنین برای علاقه‌مندان به ورزش و سفر، محصولات متنوعی را در دسته‌بندی‌های مختلف ارائه می‌دهد. اگر به دنبال خرید وسایل ورزشی برای بدنسازی، ورزش‌های هوازی، یا کمپینگ هستید، دیجی کالا مجموعه‌ای از لوازم ورزشی از جمله وزنه، ساک ورزشی، قمقمه و بسیاری از لوازم دیگر را ارائه می‌دهد. همچنین شما می‌توانید برای سفرهای خود، ساک‌های مسافرتی، کوله پشتی‌های کوهنوردی و لوازم کمپینگ را از این فروشگاه خریداری کنید.
+              - heading "کارت هدیه" [level=3] [ref=e1390]
+              - paragraph [ref=e1391]: کارت هدیه‌ها راهی عالی برای هدیه دادن به عزیزانتان هستند و در دیجی کالا انواع مختلفی از آنها برای مناسبت‌های گوناگون وجود دارد. شما می‌توانید کارت هدیه فیزیکی دیجی کالا را به صورت عمومی یا براساس مناسبت‌های خاص همچون تولد یا سالگرد خریداری کنید. همچنین، کارت هدیه براساس قیمت امکان انتخاب هدیه‌ای مناسب با بودجه شما را فراهم می‌کند. علاوه بر کارت‌های فیزیکی، کارت هدیه الکترونیکی دیجی کالا هم برای افرادی که به دنبال یک گزینه سریع و آسان هستند، وجود دارد.
+              - heading "مکمل های غذایی" [level=3] [ref=e1392]
+              - paragraph [ref=e1393]:
+                - text: دیجی کالا همچنین به عنوان یکی از مراجع معتبر برای خرید
+                - link "مکمل" [ref=e1394] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/category-sports-and_fitness-supplements/
+                - text: نیز شناخته می‌شود. شما می‌توانید انواع قرص‌های ویتامین،
+                - link "منيزيم" [ref=e1395] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/facet/category-medical-supplement/type-of-vitamins-and-minerals-magnesium/
+                - text: ،
+                - link "زينك" [ref=e1396] [cursor=pointer]:
+                  - /url: https://www.digikala.com/search/facet/category-medical-supplement/type-of-vitamins-and-minerals-zink/
+                - text: ، ويتامين C و بسیاری از مکمل‌های دیگر را از برندهای معروف و معتبر در دیجی کالا پیدا کنید. این مکمل‌ها به سلامت شما کمک می‌کنند و برای تقویت سیستم ایمنی بدن یا افزایش انرژی و بهبود وضعیت پوست و مو مفید هستند.
+              - paragraph [ref=e1397]: در آخر باید گفت خرید از دیجی کالا به دلیل تنوع بالای محصولات، خدمات ارسال سریع، تخفیف‌های ویژه، و امکان خرید آنلاین کالاهای متنوع از برندهای معتبر، یکی از بهترین انتخاب‌ها برای خریداران آنلاین در ایران است. با استفاده از خدمات دیجی کالا، خریدی مطمئن، سریع و راحت را تجربه خواهید کرد.
+              - paragraph [ref=e1398]
+            - generic [ref=e1399] [cursor=pointer]:
+              - generic [ref=e1400]: مشاهده بیشتر
+              - img [ref=e1402]
+          - generic [ref=e1404]:
+            - link "سامانه پایش مردمی رسانه‌های صوت و تصویر" [ref=e1405] [cursor=pointer]:
+              - /url: https://sapra.ir/
+              - generic "سامانه پایش مردمی رسانه‌های صوت و تصویر" [ref=e1406]
+            - generic "نشان ملی ثبت" [ref=e1410] [cursor=pointer]
+            - generic "نماد کسب و کار های مجازی" [ref=e1414] [cursor=pointer]
+            - link "نماد اعتماد الکترونیک" [ref=e1417] [cursor=pointer]:
+              - /url: https://trustseal.enamad.ir/?id=19077&Code=sScdOJOzhFxtcEqkjP7P
+              - generic "نماد اعتماد الکترونیک" [ref=e1418]:
+                - img "نماد اعتماد الکترونیک" [ref=e1419]
+        - generic [ref=e1420]: برای استفاده از مطالب دیجی‌کالا، داشتن «هدف غیرتجاری» و ذکر «منبع» کافیست. تمام حقوق اين وب‌سايت نیز برای شرکت نوآوران فن آوازه (فروشگاه آنلاین دیجی‌کالا) است.
+      - generic [ref=e1422]:
+        - link "مجله اینترنتی دیجی‌کالا مگ" [ref=e1423] [cursor=pointer]:
+          - /url: https://www.digikala.com/mag/
+          - generic "مجله اینترنتی دیجی‌کالا مگ"
+        - link "بهترین راهکارهای پرداخت آنلاین" [ref=e1424] [cursor=pointer]:
+          - /url: https://www.mydigipay.com/
+          - generic "بهترین راهکارهای پرداخت آنلاین"
+        - link "خرید آنلاین مد و لباس از فروشگاه اینترنتی دیجی‌استایل با همان تجربه از دیجی‌کالا" [ref=e1425] [cursor=pointer]:
+          - /url: https://www.digistyle.com/
+          - generic "خرید آنلاین مد و لباس از فروشگاه اینترنتی دیجی‌استایل با همان تجربه از دیجی‌کالا"
+        - link "خدمات ویژه دیجی‌کالا برای کاربران با اشتراک پلاس" [ref=e1426] [cursor=pointer]:
+          - /url: /plus/landing/
+          - generic "خدمات ویژه دیجی‌کالا برای کاربران با اشتراک پلاس"
+        - link "دیجی کلاب باشگاه مشتریان دیجیکالا" [ref=e1427] [cursor=pointer]:
+          - /url: /digiclub/
+          - generic "دیجی کلاب باشگاه مشتریان دیجیکالا"
+        - link "خرید آنی سوپرمارکتی از فروشگاه های نزدیک" [ref=e1428] [cursor=pointer]:
+          - /url: https://digikalajet.com/
+          - generic "خرید آنی سوپرمارکتی از فروشگاه های نزدیک"
+        - link "دیجی‌کالا ادز" [ref=e1429] [cursor=pointer]:
+          - /url: https://www.digikalaads.com/
+          - generic "دیجی‌کالا ادز"
+        - link "دیجیکالا مهر - زنجیره مهربانی و لبخند" [ref=e1430] [cursor=pointer]:
+          - /url: https://mehr.digikala.com/
+          - generic "دیجیکالا مهر - زنجیره مهربانی و لبخند"
+        - link "مرکز نوآوری و فناوری گروه دیجی‌کالا" [ref=e1431] [cursor=pointer]:
+          - /url: https://diginext.ir/
+          - generic "مرکز نوآوری و فناوری گروه دیجی‌کالا"
+        - link "سیستم حمل و نقل دیجی‌کالا" [ref=e1432] [cursor=pointer]:
+          - /url: https://digiexpress.ir/
+          - generic "سیستم حمل و نقل دیجی‌کالا"
+        - link "گنجه" [ref=e1433] [cursor=pointer]:
+          - /url: https://ganje.net/?utm_source=Digikala_web&utm_medium=Footer
+          - generic "گنجه"
+        - link "دیجی‌فای" [ref=e1434] [cursor=pointer]:
+          - /url: https://digify.shop/
+          - generic "دیجی‌فای"
+        - link "اسمارتک" [ref=e1435] [cursor=pointer]:
+          - /url: https://smartech.ir/
+          - generic "اسمارتک"
+        - link "دیجی‌کالا بیزینس" [ref=e1436] [cursor=pointer]:
+          - /url: https://b2b.digikala.com/?utm_source=DK&utm_medium=FooterBadge&utm_campaign=DKtraffic
+          - generic "دیجی‌کالا بیزینس"
+        - link "دیجی‌کالا سرویس" [ref=e1437] [cursor=pointer]:
+          - /url: https://service.digikala.com/
+          - generic "دیجی‌کالا سرویس"
+        - link "میاره" [ref=e1438] [cursor=pointer]:
+          - /url: https://www.miare.ir/
+          - generic "میاره"
+        - link "ویدومارت" [ref=e1439] [cursor=pointer]:
+          - /url: https://www.vidomart.shop
+          - generic "ویدومارت"
+        - link "طلای دیجیتال" [ref=e1440] [cursor=pointer]:
+          - /url: https://www.digikala.com/wealth/my-assets/
+          - generic "طلای دیجیتال"
+  - alert [ref=e1441]

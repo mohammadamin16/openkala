@@ -160,7 +160,7 @@ private fun ErrorHomeScreen(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-private fun HomeScreen(
+internal fun HomeScreen(
     data: HomeScreenData,
     isRefreshing: Boolean,
     styleSpec: HomeStyleSpec,
@@ -238,9 +238,10 @@ private fun HomeScreen(
                         state = pagerState,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(styleSpec.heroSectionHeight)
                             .background(OpenKalaColorTokens.Surface)
-                            .padding(vertical = 10.dp)
+                            .padding(vertical = 10.dp),
+                        contentPadding = PaddingValues(horizontal = styleSpec.heroCarouselHorizontalPadding),
+                        pageSpacing = styleSpec.heroCarouselPageSpacing
                     ) { page ->
                         val banner = banners.getOrNull(page)
                         if (banner != null) {
@@ -249,9 +250,8 @@ private fun HomeScreen(
                                 contentDescription = banner.title,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(styleSpec.heroSectionHeight - 20.dp)
-                                    .padding(horizontal = styleSpec.heroHorizontalPadding)
-                                    .clip(OpenKalaRadiusTokens.Large),
+                                    .aspectRatio(styleSpec.heroCardAspectRatio)
+                                    .clip(RoundedCornerShape(styleSpec.heroCardRadius)),
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -259,6 +259,15 @@ private fun HomeScreen(
                 }
 
                 item { ShortcutsRow(data, styleSpec) }
+
+                item {
+                    IncredibleSection(
+                        items = data.incredibleOffers.items,
+                        styleSpec = styleSpec,
+                        pixelPerfectMode = pixelPerfectMode,
+                        onProductClick = onProductClick
+                    )
+                }
 
                 item {
                     TopBannersSection(
@@ -274,6 +283,12 @@ private fun HomeScreen(
                         styleSpec = styleSpec,
                         pixelPerfectMode = pixelPerfectMode,
                         onProductClick = onProductClick
+                    )
+                }
+                item {
+                    MiddlePromoBannersSection(
+                        banners = data.middlePromoBanners,
+                        styleSpec = styleSpec
                     )
                 }
 
@@ -379,6 +394,52 @@ private fun TopTabWebViewContainer(
             }
         }
     )
+}
+
+@Composable
+internal fun MiddlePromoBannersSection(
+    banners: List<Banner>,
+    styleSpec: HomeStyleSpec,
+    onBannerClick: (Banner) -> Unit = {}
+) {
+    val visibleBanners = banners.take(4)
+    if (visibleBanners.isEmpty()) return
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(OpenKalaColorTokens.AppBackground)
+            .padding(
+                horizontal = styleSpec.middleBannersSectionHorizontalPadding,
+                vertical = styleSpec.middleBannersSectionVerticalPadding
+            )
+            .testTag("home_middle_banners_section"),
+        verticalArrangement = Arrangement.spacedBy(styleSpec.middleBannersGridGap)
+    ) {
+        visibleBanners.chunked(2).forEach { rowBanners ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(styleSpec.middleBannersGridGap)
+            ) {
+                rowBanners.forEach { banner ->
+                    AsyncImage(
+                        model = banner.imageUrl,
+                        contentDescription = banner.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(styleSpec.middleBannersCardAspectRatio)
+                            .clip(RoundedCornerShape(styleSpec.middleBannersCardRadius))
+                            .clickable { onBannerClick(banner) }
+                            .testTag("home_middle_banner_card")
+                    )
+                }
+                if (rowBanners.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
 }
 
 @Composable

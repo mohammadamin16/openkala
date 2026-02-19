@@ -8,7 +8,8 @@ data class HomeScreenData(
     val shortcuts: List<ShortcutItem>,
     val incredibleOffers: IncredibleSection,
     val topBanners: List<Banner>,
-    val freshIncredibleOffers: IncredibleSection
+    val freshIncredibleOffers: IncredibleSection,
+    val middlePromoBanners: List<Banner>
 )
 
 data class Banner(

@@ -32,6 +32,9 @@ data class HomeStyleSpec(
     val heroSectionHeight: Dp = 140.dp,
     val heroCardRadius: Dp = 16.dp,
     val heroHorizontalPadding: Dp = 14.dp,
+    val heroCardAspectRatio: Float = 2f,
+    val heroCarouselHorizontalPadding: Dp = 18.dp,
+    val heroCarouselPageSpacing: Dp = 10.dp,
 
     val shortcutIconSize: Dp = 54.dp,
     val shortcutLabelWidth: Dp = 80.dp,
@@ -56,6 +59,11 @@ data class HomeStyleSpec(
     val topBannersCardAspectRatio: Float = 4f / 3f,
     val topBannersCardRadius: Dp = 12.dp,
     val topBannersGridGap: Dp = 8.dp,
+    val middleBannersSectionHorizontalPadding: Dp = 12.dp,
+    val middleBannersSectionVerticalPadding: Dp = 8.dp,
+    val middleBannersCardAspectRatio: Float = 4f / 3f,
+    val middleBannersCardRadius: Dp = 12.dp,
+    val middleBannersGridGap: Dp = 8.dp,
 
     val bottomNavTopPadding: Dp = 6.dp,
     val bottomNavBottomPadding: Dp = 14.dp,

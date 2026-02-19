@@ -71,6 +71,7 @@ class HomeMappersTest {
         val result = mapHomeScreenData(home, pillarsJson())
 
         assertTrue(result.topBanners.isEmpty())
+        assertTrue(result.middlePromoBanners.isEmpty())
     }
 
     @Test
@@ -141,6 +142,90 @@ class HomeMappersTest {
         assertEquals(259000L, result.freshIncredibleOffers.items.first().originalPrice)
         assertEquals(23, result.freshIncredibleOffers.items.first().discountPercent)
         assertEquals(4500L, result.freshIncredibleOffers.items.first().timerSeconds)
+    }
+
+    @Test
+    fun mapHomeScreenData_mergesMiddleBannersAndThirdAndTakesFour() {
+        val home = homeJson(
+            """
+            "middle_banners": [
+              {
+                "id": 1,
+                "title": "m1",
+                "webp_image": "https://cdn.example/m1.webp",
+                "image": "https://cdn.example/m1.jpg",
+                "url": { "uri": "/m1" }
+              },
+              {
+                "id": 2,
+                "title": "m2",
+                "webp_image": "",
+                "image": "https://cdn.example/m2.jpg",
+                "url": { "uri": "/m2" }
+              },
+              {
+                "id": 3,
+                "title": "m3",
+                "webp_image": "https://cdn.example/m3.webp",
+                "image": "https://cdn.example/m3.jpg",
+                "url": { "uri": "/m3" }
+              }
+            ],
+            "middle_banners_third": [
+              {
+                "id": 4,
+                "title": "t1",
+                "webp_image": "https://cdn.example/t1.webp",
+                "image": "https://cdn.example/t1.jpg",
+                "url": { "uri": "/t1" }
+              },
+              {
+                "id": 5,
+                "title": "t2",
+                "webp_image": "https://cdn.example/t2.webp",
+                "image": "https://cdn.example/t2.jpg",
+                "url": { "uri": "/t2" }
+              }
+            ]
+            """.trimIndent()
+        )
+
+        val result = mapHomeScreenData(home, pillarsJson())
+
+        assertEquals(4, result.middlePromoBanners.size)
+        assertEquals(listOf(1L, 2L, 3L, 4L), result.middlePromoBanners.map { it.id })
+        assertEquals("https://cdn.example/m2.jpg", result.middlePromoBanners[1].imageUrl)
+    }
+
+    @Test
+    fun mapHomeScreenData_filtersMiddleBannersWithoutImages() {
+        val home = homeJson(
+            """
+            "middle_banners": [
+              {
+                "id": 11,
+                "title": "invalid",
+                "webp_image": "",
+                "image": "",
+                "url": { "uri": "/invalid" }
+              }
+            ],
+            "middle_banners_third": [
+              {
+                "id": 12,
+                "title": "valid",
+                "webp_image": "https://cdn.example/valid.webp",
+                "image": "",
+                "url": { "uri": "/valid" }
+              }
+            ]
+            """.trimIndent()
+        )
+
+        val result = mapHomeScreenData(home, pillarsJson())
+
+        assertEquals(1, result.middlePromoBanners.size)
+        assertEquals(12L, result.middlePromoBanners.first().id)
     }
 
     private fun homeJson(extraFields: String): JsonObject {

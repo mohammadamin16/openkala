@@ -1,0 +1,237 @@
+- generic [active] [ref=e1]:
+  - img [ref=e2]
+  - generic [ref=e4]:
+    - banner [ref=e6]:
+      - link "لوگوی دیجیکالا" [ref=e11] [cursor=pointer]:
+        - /url: /
+        - generic "لوگوی دیجیکالا" [ref=e12]:
+          - img "لوگوی دیجیکالا" [ref=e13]
+      - navigation [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e28] [cursor=pointer]:
+              - img [ref=e30]
+              - text: دسته‌بندی کالاها
+            - generic [ref=e31]:
+              - link "شگفت‌انگیزها" [ref=e33] [cursor=pointer]:
+                - /url: /incredible-offers/
+                - img [ref=e35]
+                - text: شگفت‌انگیزها
+              - link " سوپرمارکت" [ref=e37] [cursor=pointer]:
+                - /url: /main/food-beverage/
+                - generic [ref=e39]: 
+                - text: سوپرمارکت
+              - link " طلای دیجیتال" [ref=e41] [cursor=pointer]:
+                - /url: https://www.digikala.com/wealth/my-assets/?utm_source=dk&utm_medium=undersearchbutton&utm_campaign=fixbutton
+                - generic [ref=e43]: 
+                - text: طلای دیجیتال
+              - link "پرفروش‌ترین‌ها" [ref=e45] [cursor=pointer]:
+                - /url: /best-selling/
+                - img [ref=e47]
+                - text: پرفروش‌ترین‌ها
+            - generic [ref=e48]:
+              - link "سوالی دارید؟" [ref=e50] [cursor=pointer]:
+                - /url: /faq/
+              - link "در دیجی‌کالا بفروشید!" [ref=e52] [cursor=pointer]:
+                - /url: /landings/seller-introduction/
+          - generic [ref=e56] [cursor=pointer]:
+            - generic [ref=e58]: 
+            - paragraph [ref=e59]: شهر خود را انتخاب کنید
+    - generic [ref=e61]:
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - img "Loading..." [ref=e68] [cursor=pointer]
+          - img "Loading..." [ref=e71] [cursor=pointer]
+          - img "Loading..." [ref=e74] [cursor=pointer]
+          - img "Loading..." [ref=e77] [cursor=pointer]
+          - img "Loading..." [ref=e80] [cursor=pointer]
+        - img "Loading..." [ref=e84]
+      - button [ref=e86] [cursor=pointer]:
+        - img [ref=e89]
+    - contentinfo [ref=e90]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic "digikala - دیجی کالا" [ref=e94]:
+            - img "digikala - دیجی کالا" [ref=e95]
+          - button "بازگشت به بالا" [ref=e96] [cursor=pointer]:
+            - generic [ref=e97]:
+              - generic [ref=e98]: بازگشت به بالا
+              - img [ref=e100]
+        - generic [ref=e101]:
+          - paragraph [ref=e102]: تلفن پشتیبانی ۶۱۹۳۰۰۰۰ - ۰۲۱
+          - generic [ref=e103]: "|"
+          - paragraph [ref=e104]: ۰۲۱-۹۱۰۰۰۱۰۰
+          - generic [ref=e105]: "|"
+          - paragraph [ref=e106]: ۷ روز هفته، ۲۴ ساعته پاسخگوی شما هستیم
+        - generic [ref=e107]:
+          - link "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e108] [cursor=pointer]:
+            - /url: /faq/question/79/
+            - generic "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e109]:
+              - img "اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس" [ref=e110]
+            - paragraph [ref=e111]: اﻣﮑﺎن ﺗﺤﻮﯾﻞ اﮐﺴﭙﺮس
+          - link "امکان پرداخت در محل امکان پرداخت در محل" [ref=e112] [cursor=pointer]:
+            - /url: /faq/question/81/
+            - generic "امکان پرداخت در محل" [ref=e113]:
+              - img "امکان پرداخت در محل" [ref=e114]
+            - paragraph [ref=e115]: امکان پرداخت در محل
+          - link "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ ۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e116] [cursor=pointer]:
+            - /url: /page/contact-us/
+            - generic "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e117]:
+              - img "۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ" [ref=e118]
+            - paragraph [ref=e119]: ۷ روز ﻫﻔﺘﻪ، ۲۴ ﺳﺎﻋﺘﻪ
+          - link "هفت روز ضمانت بازگشت کالا هفت روز ضمانت بازگشت کالا" [ref=e120] [cursor=pointer]:
+            - /url: /faq/question/83/
+            - generic "هفت روز ضمانت بازگشت کالا" [ref=e121]:
+              - img "هفت روز ضمانت بازگشت کالا" [ref=e122]
+            - paragraph [ref=e123]: هفت روز ضمانت بازگشت کالا
+          - link "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e124] [cursor=pointer]:
+            - /url: /faq/question/82/
+            - generic "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e125]:
+              - img "ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ" [ref=e126]
+            - paragraph [ref=e127]: ﺿﻤﺎﻧﺖ اﺻﻞ ﺑﻮدن ﮐﺎﻟﺎ
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - paragraph [ref=e130]: با دیجی‌کالا
+            - link "اتاق خبر دیجی‌کالا" [ref=e131] [cursor=pointer]:
+              - /url: https://about.digikala.com/newsroom/
+            - link "فروش در دیجی‌کالا" [ref=e132] [cursor=pointer]:
+              - /url: /landings/seller-introduction/
+            - link "فرصت‌های شغلی" [ref=e133] [cursor=pointer]:
+              - /url: https://careers.digikala.com/
+            - link "گزارش تخلف در دیجی‌کالا" [ref=e134] [cursor=pointer]:
+              - /url: https://digikalagroup-rac.com/portal/go/External-cases
+            - link "تماس با دیجی‌کالا" [ref=e135] [cursor=pointer]:
+              - /url: /page/contact-us/
+            - link "درباره دیجی‌کالا" [ref=e136] [cursor=pointer]:
+              - /url: https://about.digikala.com/
+          - generic [ref=e137]:
+            - paragraph [ref=e138]: خدمات مشتریان
+            - link "پاسخ به پرسش‌های متداول" [ref=e139] [cursor=pointer]:
+              - /url: /faq/
+            - link "رویه‌های بازگرداندن کالا" [ref=e140] [cursor=pointer]:
+              - /url: /faq/question/83/
+            - link "شرایط استفاده" [ref=e141] [cursor=pointer]:
+              - /url: /page/terms/
+            - link "حریم خصوصی" [ref=e142] [cursor=pointer]:
+              - /url: /page/privacy/
+            - link "گزارش باگ" [ref=e143] [cursor=pointer]:
+              - /url: /page/bug-report/
+          - generic [ref=e144]:
+            - paragraph [ref=e145]: راهنمای خرید از دیجی‌کالا
+            - link "نحوه ثبت سفارش" [ref=e146] [cursor=pointer]:
+              - /url: /faq/question/649/
+            - link "رویه ارسال سفارش" [ref=e147] [cursor=pointer]:
+              - /url: /faq/question/79/
+            - link "شیوه‌های پرداخت" [ref=e148] [cursor=pointer]:
+              - /url: /faq/question/81/
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - heading "همراه ما باشید!" [level=4] [ref=e151]
+              - generic [ref=e152]:
+                - link [ref=e153] [cursor=pointer]:
+                  - /url: https://www.instagram.com/digikalacom/
+                  - img [ref=e155]
+                - link [ref=e156] [cursor=pointer]:
+                  - /url: https://twitter.com/digikalacom
+                  - img [ref=e158]
+                - link [ref=e159] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/digikala/mycompany/
+                  - img [ref=e161]
+                - link [ref=e162] [cursor=pointer]:
+                  - /url: https://www.aparat.com/digikala/
+                  - img [ref=e164]
+            - generic [ref=e165]:
+              - heading "با ثبت ایمیل، از جدید‌ترین تخفیف‌ها با‌خبر شوید" [level=4] [ref=e166]
+              - generic [ref=e168]:
+                - textbox [ref=e172]:
+                  - /placeholder: ایمیل شما
+                - button "ثبت":
+                  - generic: ثبت
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - generic "دیجی‌کالا" [ref=e175]
+            - generic [ref=e178]: دانلود اپلیکیشن دیجی‌کالا
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - link "دریافت از کافه‌بازار" [ref=e181] [cursor=pointer]:
+                - /url: https://click.adtrace.io/d5wyajq
+                - generic "دریافت از کافه‌بازار" [ref=e182]
+              - link "دریافت از مایکت" [ref=e184] [cursor=pointer]:
+                - /url: https://click.adtrace.io/y9sit74
+                - generic "دریافت از مایکت" [ref=e185]
+              - link "دریافت از سیب‌اپ" [ref=e187] [cursor=pointer]:
+                - /url: https://click.adtrace.io/56hqs7k
+                - generic "دریافت از سیب‌اپ" [ref=e188]
+            - link [ref=e190] [cursor=pointer]:
+              - /url: /landings/new-app/
+        - generic [ref=e193]:
+          - generic [ref=e196] [cursor=pointer]:
+            - generic [ref=e197]: مشاهده بیشتر
+            - img [ref=e199]
+          - generic [ref=e200]:
+            - link "سامانه پایش مردمی رسانه‌های صوت و تصویر" [ref=e201] [cursor=pointer]:
+              - /url: https://sapra.ir/
+              - generic "سامانه پایش مردمی رسانه‌های صوت و تصویر" [ref=e202]
+            - generic "نشان ملی ثبت" [ref=e206] [cursor=pointer]
+            - generic "نماد کسب و کار های مجازی" [ref=e210] [cursor=pointer]
+            - link "نماد اعتماد الکترونیک" [ref=e213] [cursor=pointer]:
+              - /url: https://trustseal.enamad.ir/?id=19077&Code=sScdOJOzhFxtcEqkjP7P
+              - generic "نماد اعتماد الکترونیک" [ref=e214]:
+                - img "نماد اعتماد الکترونیک" [ref=e215]
+        - generic [ref=e216]: برای استفاده از مطالب دیجی‌کالا، داشتن «هدف غیرتجاری» و ذکر «منبع» کافیست. تمام حقوق اين وب‌سايت نیز برای شرکت نوآوران فن آوازه (فروشگاه آنلاین دیجی‌کالا) است.
+      - generic [ref=e218]:
+        - link "مجله اینترنتی دیجی‌کالا مگ" [ref=e219] [cursor=pointer]:
+          - /url: https://www.digikala.com/mag/
+          - generic "مجله اینترنتی دیجی‌کالا مگ"
+        - link "بهترین راهکارهای پرداخت آنلاین" [ref=e220] [cursor=pointer]:
+          - /url: https://www.mydigipay.com/
+          - generic "بهترین راهکارهای پرداخت آنلاین"
+        - link "خرید آنلاین مد و لباس از فروشگاه اینترنتی دیجی‌استایل با همان تجربه از دیجی‌کالا" [ref=e221] [cursor=pointer]:
+          - /url: https://www.digistyle.com/
+          - generic "خرید آنلاین مد و لباس از فروشگاه اینترنتی دیجی‌استایل با همان تجربه از دیجی‌کالا"
+        - link "خدمات ویژه دیجی‌کالا برای کاربران با اشتراک پلاس" [ref=e222] [cursor=pointer]:
+          - /url: /plus/landing/
+          - generic "خدمات ویژه دیجی‌کالا برای کاربران با اشتراک پلاس"
+        - link "دیجی کلاب باشگاه مشتریان دیجیکالا" [ref=e223] [cursor=pointer]:
+          - /url: /digiclub/
+          - generic "دیجی کلاب باشگاه مشتریان دیجیکالا"
+        - link "خرید آنی سوپرمارکتی از فروشگاه های نزدیک" [ref=e224] [cursor=pointer]:
+          - /url: https://digikalajet.com/
+          - generic "خرید آنی سوپرمارکتی از فروشگاه های نزدیک"
+        - link "دیجی‌کالا ادز" [ref=e225] [cursor=pointer]:
+          - /url: https://www.digikalaads.com/
+          - generic "دیجی‌کالا ادز"
+        - link "دیجیکالا مهر - زنجیره مهربانی و لبخند" [ref=e226] [cursor=pointer]:
+          - /url: https://mehr.digikala.com/
+          - generic "دیجیکالا مهر - زنجیره مهربانی و لبخند"
+        - link "مرکز نوآوری و فناوری گروه دیجی‌کالا" [ref=e227] [cursor=pointer]:
+          - /url: https://diginext.ir/
+          - generic "مرکز نوآوری و فناوری گروه دیجی‌کالا"
+        - link "سیستم حمل و نقل دیجی‌کالا" [ref=e228] [cursor=pointer]:
+          - /url: https://digiexpress.ir/
+          - generic "سیستم حمل و نقل دیجی‌کالا"
+        - link "گنجه" [ref=e229] [cursor=pointer]:
+          - /url: https://ganje.net/?utm_source=Digikala_web&utm_medium=Footer
+          - generic "گنجه"
+        - link "دیجی‌فای" [ref=e230] [cursor=pointer]:
+          - /url: https://digify.shop/
+          - generic "دیجی‌فای"
+        - link "اسمارتک" [ref=e231] [cursor=pointer]:
+          - /url: https://smartech.ir/
+          - generic "اسمارتک"
+        - link "دیجی‌کالا بیزینس" [ref=e232] [cursor=pointer]:
+          - /url: https://b2b.digikala.com/?utm_source=DK&utm_medium=FooterBadge&utm_campaign=DKtraffic
+          - generic "دیجی‌کالا بیزینس"
+        - link "دیجی‌کالا سرویس" [ref=e233] [cursor=pointer]:
+          - /url: https://service.digikala.com/
+          - generic "دیجی‌کالا سرویس"
+        - link "میاره" [ref=e234] [cursor=pointer]:
+          - /url: https://www.miare.ir/
+          - generic "میاره"
+        - link "ویدومارت" [ref=e235] [cursor=pointer]:
+          - /url: https://www.vidomart.shop
+          - generic "ویدومارت"
+        - link "طلای دیجیتال" [ref=e236] [cursor=pointer]:
+          - /url: https://www.digikala.com/wealth/my-assets/
+          - generic "طلای دیجیتال"
+  - alert [ref=e237]
