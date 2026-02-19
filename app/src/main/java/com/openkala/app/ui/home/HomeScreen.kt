@@ -78,6 +78,9 @@ import com.openkala.app.ui.theme.OpenKalaRadiusTokens
 import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 import com.openkala.app.ui.theme.TextPrimary
 import com.openkala.app.ui.theme.TextSecondary
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -715,7 +718,7 @@ private fun IncredibleSection(
                             )
                         }
                         Text(
-                            text = product.price?.toString()?.toPersianDigits().orEmpty(),
+                            text = product.price?.toToman()?.toPersianDigits().orEmpty(),
                             style = OpenKalaTypographyTokens.Body2Strong
                         )
                     }
@@ -819,7 +822,7 @@ internal fun FreshIncredibleSection(
                     Spacer(modifier = Modifier.height(4.dp))
                     product.originalPrice?.let { original ->
                         Text(
-                            text = original.toString().toPersianDigits(),
+                            text = original.toToman().toPersianDigits(),
                             style = OpenKalaTypographyTokens.Caption,
                             color = OpenKalaColorTokens.TextLow,
                             textDecoration = TextDecoration.LineThrough
@@ -842,7 +845,7 @@ internal fun FreshIncredibleSection(
                             )
                         }
                         Text(
-                            text = product.price?.toString()?.toPersianDigits().orEmpty(),
+                            text = product.price?.toToman()?.toPersianDigits().orEmpty(),
                             style = OpenKalaTypographyTokens.Body2Strong
                         )
                     }
@@ -914,6 +917,12 @@ private fun TimePart(
 
 private fun colorFromHex(value: String): Color {
     return runCatching { Color(parseColor(value)) }.getOrDefault(Color.White)
+}
+
+private fun Long.toToman(): String {
+    val tomanValue = this / 10
+    val formatter = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US))
+    return formatter.format(tomanValue)
 }
 
 private fun String.toPersianDigits(): String {
