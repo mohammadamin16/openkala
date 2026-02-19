@@ -55,17 +55,23 @@ import kotlinx.coroutines.delay
 @Composable
 fun SearchEntryScreenRoute(
     onBack: () -> Unit,
+    initialQuery: String,
+    onSearchSubmit: (String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: SearchEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(initialQuery) {
+        viewModel.initializeQuery(initialQuery)
+    }
 
     SearchEntryScreen(
         state = state,
         onBack = onBack,
         onQueryChange = viewModel::onQueryChange,
         onTrendClick = viewModel::onTrendClick,
+        onSearchSubmit = onSearchSubmit,
         onRetryTrends = viewModel::retryTrends,
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope
@@ -79,6 +85,7 @@ private fun SearchEntryScreen(
     onBack: () -> Unit,
     onQueryChange: (String) -> Unit,
     onTrendClick: (String) -> Unit,
+    onSearchSubmit: (String) -> Unit,
     onRetryTrends: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
@@ -122,6 +129,9 @@ private fun SearchEntryScreen(
                         query = state.query,
                         placeholder = "جستجو در همه کالاها",
                         onQueryChange = onQueryChange,
+                        onSubmit = {
+                            if (state.query.isNotBlank()) onSearchSubmit(state.query)
+                        },
                         readOnly = false,
                         modifier = Modifier.weight(1f),
                         sharedTransitionScope = sharedTransitionScope,
@@ -177,7 +187,10 @@ private fun SearchEntryScreen(
                 } else {
                     HotTrendsRow(
                         trends = state.trends,
-                        onTrendClick = onTrendClick
+                        onTrendClick = { keyword ->
+                            onTrendClick(keyword)
+                            onSearchSubmit(keyword)
+                        }
                     )
                 }
             }
@@ -224,7 +237,10 @@ private fun SearchEntryScreen(
                     items(state.suggestions, key = { it.keyword }) { suggestion ->
                         SuggestionRow(
                             suggestion = suggestion,
-                            onClick = { onQueryChange(suggestion.keyword) }
+                            onClick = {
+                                onQueryChange(suggestion.keyword)
+                                onSearchSubmit(suggestion.keyword)
+                            }
                         )
                     }
                 }

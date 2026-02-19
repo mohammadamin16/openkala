@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -44,18 +45,22 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -181,6 +186,27 @@ internal fun HomeScreen(
         data.superAppTabs.firstOrNull { it.name == selectedTab }
     }
     val inWebMode = selectedTab != "digikala"
+    val listState = rememberLazyListState()
+    val topTabsExpandedHeight = styleSpec.tabCardHeight + styleSpec.tabRowTopPadding + 6.dp
+    val collapseRangePx = with(LocalDensity.current) { topTabsExpandedHeight.toPx().coerceAtLeast(1f) }
+    val targetCollapseProgress by remember(inWebMode, listState, collapseRangePx) {
+        derivedStateOf {
+            if (inWebMode) {
+                0f
+            } else {
+                val scrolledPx = if (listState.firstVisibleItemIndex > 0) {
+                    collapseRangePx
+                } else {
+                    listState.firstVisibleItemScrollOffset.toFloat()
+                }
+                (scrolledPx / collapseRangePx).coerceIn(0f, 1f)
+            }
+        }
+    }
+    val collapseProgress by animateFloatAsState(
+        targetValue = targetCollapseProgress,
+        label = "home_top_tabs_collapse"
+    )
 
     LaunchedEffect(inWebMode) {
         onWebModeChanged(inWebMode)
@@ -205,12 +231,26 @@ internal fun HomeScreen(
             .background(OpenKalaColorTokens.AppBackground)
             .testTag("home_root")
     ) {
-        TopTabsRow(
-            tabs = data.superAppTabs,
-            selectedTab = selectedTab,
-            styleSpec = styleSpec,
-            onTabClick = { tab -> selectedTab = tab.name }
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(topTabsExpandedHeight * (1f - collapseProgress))
+        ) {
+            if (collapseProgress < 1f) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(1f - collapseProgress)
+                ) {
+                    TopTabsRow(
+                        tabs = data.superAppTabs,
+                        selectedTab = selectedTab,
+                        styleSpec = styleSpec,
+                        onTabClick = { tab -> selectedTab = tab.name }
+                    )
+                }
+            }
+        }
 
         if (!inWebMode) {
             Box(
@@ -223,9 +263,10 @@ internal fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .testTag("home_list"),
+                    state = listState,
                     contentPadding = PaddingValues(bottom = 10.dp)
                 ) {
-                    item {
+                    stickyHeader {
                         SearchAndLocationSection(
                             styleSpec = styleSpec,
                             onSearchClick = onSearchClick,

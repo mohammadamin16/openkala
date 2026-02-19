@@ -25,6 +25,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,6 +50,7 @@ fun SharedSearchBar(
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
     focusRequester: FocusRequester? = null,
+    onSubmit: (() -> Unit)? = null,
     sharedKey: String = SHARED_SEARCH_BAR_KEY,
     textStyle: TextStyle = OpenKalaTypographyTokens.SubtitleStrong
 ) {
@@ -103,6 +107,8 @@ fun SharedSearchBar(
                 onValueChange = onQueryChange,
                 readOnly = false,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { onSubmit?.invoke() }),
                 textStyle = textStyle.copy(color = OpenKalaColorTokens.TextHigh),
                 modifier = Modifier
                     .weight(1f)

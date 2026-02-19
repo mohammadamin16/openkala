@@ -48,17 +48,21 @@ import com.openkala.app.ui.home.HomeScreenRoute
 import com.openkala.app.ui.home.PixelPerfectHomeStyle
 import com.openkala.app.ui.home.bottomNavTextSize
 import com.openkala.app.ui.search.SearchEntryScreenRoute
+import com.openkala.app.ui.search.results.SearchResultsScreenRoute
 import com.openkala.app.ui.theme.OpenKalaColorTokens
 import com.openkala.app.ui.theme.OpenKalaTypographyTokens
 
 private const val HOME_ROUTE = "home"
 private const val CATEGORIES_ROUTE = "categories"
-private const val SEARCH_ENTRY_ROUTE = "search-entry"
+private const val SEARCH_ENTRY_ROUTE_PATTERN = "search-entry?query={query}"
+private const val SEARCH_RESULTS_ROUTE_PATTERN = "search-results?query={query}&categoryCode={categoryCode}"
 private const val PRODUCT_ROUTE_PATTERN =
     "product/{productId}?title={title}&imageUrl={imageUrl}&price={price}&discount={discount}"
 
 object OpenKalaDestinations {
     const val ProductRoute = PRODUCT_ROUTE_PATTERN
+    const val SearchEntryRoute = SEARCH_ENTRY_ROUTE_PATTERN
+    const val SearchResultsRoute = SEARCH_RESULTS_ROUTE_PATTERN
 
     fun productRoute(preview: ProductPreview): String {
         val title = Uri.encode(preview.title)
@@ -66,6 +70,14 @@ object OpenKalaDestinations {
         val price = preview.price ?: -1L
         val discount = preview.discountPercent ?: -1
         return "product/${preview.productId}?title=$title&imageUrl=$imageUrl&price=$price&discount=$discount"
+    }
+
+    fun searchEntryRoute(query: String = ""): String {
+        return "search-entry?query=${Uri.encode(query)}"
+    }
+
+    fun searchResultsRoute(query: String, categoryCode: String? = null): String {
+        return "search-results?query=${Uri.encode(query)}&categoryCode=${Uri.encode(categoryCode.orEmpty())}"
     }
 }
 
@@ -99,6 +111,7 @@ fun OpenKalaNavHost() {
     val showBottomBar = when (currentRoute) {
         HOME_ROUTE -> !isHomeTopTabWebMode
         CATEGORIES_ROUTE -> true
+        "search-results" -> true
         else -> false
     }
 
@@ -160,7 +173,7 @@ fun OpenKalaNavHost() {
                             )
                         },
                         onSearchClick = {
-                            navController.navigate(SEARCH_ENTRY_ROUTE)
+                            navController.navigate(OpenKalaDestinations.searchEntryRoute())
                         },
                         onWebModeChanged = { isWebMode ->
                             isHomeTopTabWebMode = isWebMode
@@ -172,7 +185,7 @@ fun OpenKalaNavHost() {
 
                 composable(route = CATEGORIES_ROUTE) {
                     CategoriesScreenRoute(
-                        onSearchClick = { navController.navigate(SEARCH_ENTRY_ROUTE) },
+                        onSearchClick = { navController.navigate(OpenKalaDestinations.searchEntryRoute()) },
                         onBackClick = {
                             navController.navigate(HOME_ROUTE) {
                                 launchSingleTop = true
@@ -185,7 +198,13 @@ fun OpenKalaNavHost() {
                 }
 
                 composable(
-                    route = SEARCH_ENTRY_ROUTE,
+                    route = SEARCH_ENTRY_ROUTE_PATTERN,
+                    arguments = listOf(
+                        navArgument("query") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        }
+                    ),
                     enterTransition = {
                         slideInHorizontally(
                             initialOffsetX = { fullWidth -> fullWidth / 8 },
@@ -199,8 +218,66 @@ fun OpenKalaNavHost() {
                         ) + fadeOut(animationSpec = tween(durationMillis = 260))
                     }
                 ) {
+                    val initialQuery = it.arguments?.getString("query").orEmpty()
                     SearchEntryScreenRoute(
                         onBack = { navController.popBackStack() },
+                        initialQuery = initialQuery,
+                        onSearchSubmit = { submittedQuery ->
+                            if (submittedQuery.isNotBlank()) {
+                                navController.navigate(
+                                    OpenKalaDestinations.searchResultsRoute(query = submittedQuery)
+                                )
+                            }
+                        },
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this
+                    )
+                }
+
+                composable(
+                    route = SEARCH_RESULTS_ROUTE_PATTERN,
+                    arguments = listOf(
+                        navArgument("query") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("categoryCode") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        }
+                    )
+                ) { entry ->
+                    val query = entry.arguments?.getString("query").orEmpty()
+                    val categoryCodeArg = entry.arguments?.getString("categoryCode").orEmpty()
+                    val categoryCode = categoryCodeArg.ifBlank { null }
+
+                    SearchResultsScreenRoute(
+                        query = query,
+                        categoryCode = categoryCode,
+                        onBack = { navController.popBackStack() },
+                        onSearchBarClick = { currentQuery ->
+                            navController.navigate(OpenKalaDestinations.searchEntryRoute(currentQuery))
+                        },
+                        onProductClick = { product ->
+                            if (product.imageUrl.isNotBlank()) {
+                                context.imageLoader.enqueue(
+                                    ImageRequest.Builder(context)
+                                        .data(product.imageUrl)
+                                        .build()
+                                )
+                            }
+                            navController.navigate(
+                                OpenKalaDestinations.productRoute(
+                                    preview = ProductPreview(
+                                        productId = product.id,
+                                        title = product.title,
+                                        imageUrl = product.imageUrl,
+                                        price = product.price,
+                                        discountPercent = product.discountPercent
+                                    )
+                                )
+                            )
+                        },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this
                     )

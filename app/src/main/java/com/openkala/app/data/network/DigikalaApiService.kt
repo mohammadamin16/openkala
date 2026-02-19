@@ -39,4 +39,19 @@ interface DigikalaApiService {
         @Query("types[0]") type: String,
         @Query("hashes[0]") hash: String = ""
     ): JsonObject
+
+    @GET("v1/search/")
+    suspend fun getSearch(
+        @Query("q") query: String,
+        @Query("page") page: Int = 1,
+        @Query("sort") sort: Int? = null
+    ): JsonObject
+
+    @GET("v1/categories/{categoryCode}/search/")
+    suspend fun getCategorySearch(
+        @Path("categoryCode") categoryCode: String,
+        @Query("q") query: String,
+        @Query("page") page: Int = 1,
+        @Query("sort") sort: Int? = null
+    ): JsonObject
 }

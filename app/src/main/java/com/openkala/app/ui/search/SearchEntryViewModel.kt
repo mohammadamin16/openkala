@@ -38,6 +38,7 @@ class SearchEntryViewModel @Inject constructor(
 
     private val queryFlow = MutableStateFlow("")
     private var trendsJob: Job? = null
+    private var initializedWithQuery = false
 
     init {
         loadTrends()
@@ -51,6 +52,14 @@ class SearchEntryViewModel @Inject constructor(
 
     fun onTrendClick(keyword: String) {
         onQueryChange(keyword)
+    }
+
+    fun initializeQuery(query: String) {
+        if (initializedWithQuery) return
+        initializedWithQuery = true
+        if (query.isNotBlank()) {
+            onQueryChange(query)
+        }
     }
 
     fun retryTrends() {
