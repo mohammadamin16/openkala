@@ -1,11 +1,14 @@
 package com.openkala.app.di
 
+import android.content.Context
+import android.content.pm.ApplicationInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.openkala.app.data.network.DigikalaApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +31,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        @ApplicationContext context: Context
+    ): OkHttpClient {
+        val isDebuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
         val logger = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = if (isDebuggable) {
+                HttpLoggingInterceptor.Level.BASIC
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
 
         return OkHttpClient.Builder()
@@ -65,4 +75,3 @@ object AppModule {
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
-
