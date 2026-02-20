@@ -2,7 +2,11 @@ package com.openkala.app.ui.home
 
 import android.content.Intent
 import android.graphics.Color.parseColor
+import android.os.SystemClock
+import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -55,7 +59,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -195,7 +201,7 @@ internal fun HomeScreen(
     val context = LocalContext.current
     var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
     var currentWebView by remember { mutableStateOf<WebView?>(null) }
-    var webLoading by remember { mutableStateOf(false) }
+    val webLoadingByTab = remember { mutableStateMapOf<String, Boolean>() }
     var isBannerOverlayVisible by remember { mutableStateOf(false) }
     var bannerOverlayInitialUrl by remember { mutableStateOf("") }
     var bannerOverlayCurrentUrl by remember { mutableStateOf("") }
@@ -205,6 +211,8 @@ internal fun HomeScreen(
         data.superAppTabs.firstOrNull { it.name == selectedTab }
     }
     val inWebMode = selectedTab != "digikala"
+    val webLoading = webLoadingByTab[selectedTab] ?: false
+    val topTabsWebViewPool = remember(context) { TopTabsWebViewPool(context.applicationContext) }
     val listState = rememberLazyListState()
     val topTabsExpandedHeight = styleSpec.tabCardHeight + styleSpec.tabRowTopPadding + 6.dp
     val collapseRangePx = with(LocalDensity.current) { topTabsExpandedHeight.toPx().coerceAtLeast(1f) }
@@ -233,8 +241,24 @@ internal fun HomeScreen(
     LaunchedEffect(isBannerOverlayVisible) {
         onBannerOpenStateChanged(isBannerOverlayVisible)
     }
+    LaunchedEffect(data.superAppTabs, selectedTab) {
+        if (selectedTab != "digikala") return@LaunchedEffect
+        delay(1200)
+        val preloadCandidate = data.superAppTabs.firstOrNull { tab ->
+            tab.name != "digikala" && normalizeWebUrl(tab.webUrl).isNotBlank()
+        } ?: return@LaunchedEffect
+        val preloadUrl = normalizeWebUrl(preloadCandidate.webUrl)
+        topTabsWebViewPool.preload(
+            tabKey = preloadCandidate.name,
+            normalizedUrl = preloadUrl,
+            onLoadingChanged = { loading ->
+                webLoadingByTab[preloadCandidate.name] = loading
+            }
+        )
+    }
     DisposableEffect(Unit) {
         onDispose {
+            topTabsWebViewPool.destroyAll()
             onWebModeChanged(false)
             onBannerOpenStateChanged(false)
         }
@@ -442,9 +466,13 @@ internal fun HomeScreen(
                         .fillMaxWidth()
                         .weight(1f)
                         .testTag("home_top_tab_webview_container"),
+                    tabKey = selectedTabData?.name.orEmpty(),
                     url = selectedTabData?.webUrl.orEmpty(),
+                    pool = topTabsWebViewPool,
                     onWebViewReady = { currentWebView = it },
-                    onLoadingChanged = { webLoading = it }
+                    onLoadingChanged = { loading ->
+                        webLoadingByTab[selectedTab] = loading
+                    }
                 )
 
                 if (webLoading) {
@@ -488,7 +516,9 @@ internal fun HomeScreen(
 @Composable
 private fun TopTabWebViewContainer(
     modifier: Modifier = Modifier,
+    tabKey: String,
     url: String,
+    pool: TopTabsWebViewPool,
     onWebViewReady: (WebView) -> Unit,
     onLoadingChanged: (Boolean) -> Unit
 ) {
@@ -507,39 +537,26 @@ private fun TopTabWebViewContainer(
         return
     }
 
-    AndroidView(
-        modifier = modifier.testTag("home_top_tab_webview"),
-        factory = { context ->
-            WebView(context).apply {
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                settings.loadsImagesAutomatically = true
-                webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(
-                        view: WebView?,
-                        request: WebResourceRequest?
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-                        onLoadingChanged(true)
-                    }
-
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        onLoadingChanged(false)
-                    }
-                }
-                loadUrl(normalizedUrl)
+    key(tabKey) {
+        AndroidView(
+            modifier = modifier.testTag("home_top_tab_webview"),
+            factory = {
+                pool.acquire(
+                    tabKey = tabKey,
+                    normalizedUrl = normalizedUrl,
+                    onLoadingChanged = onLoadingChanged
+                ).also(onWebViewReady)
+            },
+            update = { webView ->
+                onWebViewReady(webView)
+                pool.bind(
+                    tabKey = tabKey,
+                    normalizedUrl = normalizedUrl,
+                    onLoadingChanged = onLoadingChanged
+                )
             }
-        },
-        update = { webView ->
-            onWebViewReady(webView)
-            if (webView.url != normalizedUrl) {
-                webView.loadUrl(normalizedUrl)
-            }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -846,6 +863,147 @@ private fun HomeCategoriesSection(
                 }
             }
         }
+    }
+}
+
+private data class PooledTopTabWebView(
+    val webView: WebView,
+    var lastLoadedUrl: String,
+    var lastUsedAt: Long,
+    var isPageReady: Boolean,
+    var onLoadingChanged: (Boolean) -> Unit
+)
+
+private class TopTabsWebViewPool(
+    private val context: android.content.Context
+) {
+    private val entries = linkedMapOf<String, PooledTopTabWebView>()
+    private val maxSize = 2
+
+    fun preload(
+        tabKey: String,
+        normalizedUrl: String,
+        onLoadingChanged: (Boolean) -> Unit
+    ) {
+        if (tabKey.isBlank() || normalizedUrl.isBlank()) return
+        val entry = entries[tabKey] ?: createEntry(tabKey, onLoadingChanged).also {
+            entries[tabKey] = it
+        }
+        entry.onLoadingChanged = onLoadingChanged
+        entry.lastUsedAt = SystemClock.elapsedRealtime()
+        if (entry.lastLoadedUrl != normalizedUrl || entry.webView.url.isNullOrBlank()) {
+            entry.isPageReady = false
+            entry.lastLoadedUrl = normalizedUrl
+            entry.onLoadingChanged(true)
+            entry.webView.loadUrl(normalizedUrl)
+        }
+        trimToSize(exceptKey = tabKey)
+    }
+
+    fun acquire(
+        tabKey: String,
+        normalizedUrl: String,
+        onLoadingChanged: (Boolean) -> Unit
+    ): WebView {
+        val entry = entries[tabKey] ?: createEntry(tabKey, onLoadingChanged).also {
+            entries[tabKey] = it
+        }
+        entry.onLoadingChanged = onLoadingChanged
+        entry.lastUsedAt = SystemClock.elapsedRealtime()
+        if (entry.lastLoadedUrl != normalizedUrl || entry.webView.url.isNullOrBlank()) {
+            entry.isPageReady = false
+            entry.lastLoadedUrl = normalizedUrl
+            entry.onLoadingChanged(true)
+            entry.webView.loadUrl(normalizedUrl)
+        } else {
+            entry.onLoadingChanged(!entry.isPageReady)
+        }
+        detachFromParent(entry.webView)
+        trimToSize(exceptKey = tabKey)
+        return entry.webView
+    }
+
+    fun bind(
+        tabKey: String,
+        normalizedUrl: String,
+        onLoadingChanged: (Boolean) -> Unit
+    ) {
+        val entry = entries[tabKey] ?: return
+        entry.onLoadingChanged = onLoadingChanged
+        entry.lastUsedAt = SystemClock.elapsedRealtime()
+        if (normalizedUrl.isNotBlank() && entry.lastLoadedUrl != normalizedUrl) {
+            entry.isPageReady = false
+            entry.lastLoadedUrl = normalizedUrl
+            entry.onLoadingChanged(true)
+            entry.webView.loadUrl(normalizedUrl)
+        } else {
+            entry.onLoadingChanged(!entry.isPageReady)
+        }
+    }
+
+    fun destroyAll() {
+        entries.values.forEach { pooled ->
+            detachFromParent(pooled.webView)
+            pooled.webView.destroy()
+        }
+        entries.clear()
+    }
+
+    private fun createEntry(
+        tabKey: String,
+        onLoadingChanged: (Boolean) -> Unit
+    ): PooledTopTabWebView {
+        val webView = WebView(context).apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.loadsImagesAutomatically = true
+            settings.cacheMode = WebSettings.LOAD_DEFAULT
+        }
+        CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+
+        val pooled = PooledTopTabWebView(
+            webView = webView,
+            lastLoadedUrl = "",
+            lastUsedAt = SystemClock.elapsedRealtime(),
+            isPageReady = false,
+            onLoadingChanged = onLoadingChanged
+        )
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean = false
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                val entry = entries[tabKey] ?: pooled
+                entry.isPageReady = false
+                entry.onLoadingChanged(true)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                val entry = entries[tabKey] ?: pooled
+                entry.isPageReady = true
+                entry.onLoadingChanged(false)
+            }
+        }
+        return pooled
+    }
+
+    private fun trimToSize(exceptKey: String) {
+        if (entries.size <= maxSize) return
+        val candidate = entries
+            .filterKeys { it != exceptKey }
+            .minByOrNull { it.value.lastUsedAt }
+            ?: return
+        entries.remove(candidate.key)
+        detachFromParent(candidate.value.webView)
+        candidate.value.webView.destroy()
+    }
+
+    private fun detachFromParent(webView: WebView) {
+        val parent = webView.parent as? ViewGroup ?: return
+        parent.removeView(webView)
     }
 }
 
