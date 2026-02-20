@@ -82,6 +82,7 @@ import com.openkala.app.domain.model.Banner
 import com.openkala.app.domain.model.HomeCategoryItem
 import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
+import com.openkala.app.domain.model.ShortcutItem
 import com.openkala.app.domain.model.SuperAppTab
 import com.openkala.app.ui.search.SharedSearchBar
 import com.openkala.app.ui.theme.DigikalaRed
@@ -198,6 +199,7 @@ internal fun HomeScreen(
     var isBannerOverlayVisible by remember { mutableStateOf(false) }
     var bannerOverlayInitialUrl by remember { mutableStateOf("") }
     var bannerOverlayCurrentUrl by remember { mutableStateOf("") }
+    var bannerOverlayTitle by remember { mutableStateOf("فروشگاه اینترنتی دیجی‌کالا") }
     var bannerOverlayWebView by remember { mutableStateOf<WebView?>(null) }
     val selectedTabData = remember(data.superAppTabs, selectedTab) {
         data.superAppTabs.firstOrNull { it.name == selectedTab }
@@ -242,15 +244,20 @@ internal fun HomeScreen(
         isBannerOverlayVisible = false
         bannerOverlayInitialUrl = ""
         bannerOverlayCurrentUrl = ""
+        bannerOverlayTitle = "فروشگاه اینترنتی دیجی‌کالا"
         bannerOverlayWebView = null
     }
-    val openBannerOverlay: (Banner) -> Unit = { banner ->
-        val normalized = normalizeWebUrl(banner.deeplink)
+    val openWebOverlay: (String, String) -> Unit = { title, deeplink ->
+        val normalized = normalizeWebUrl(deeplink)
         if (normalized.isNotBlank()) {
+            bannerOverlayTitle = title.ifBlank { "فروشگاه اینترنتی دیجی‌کالا" }
             bannerOverlayInitialUrl = normalized
             bannerOverlayCurrentUrl = normalized
             isBannerOverlayVisible = true
         }
+    }
+    val openBannerOverlay: (Banner) -> Unit = { banner ->
+        openWebOverlay("فروشگاه اینترنتی دیجی‌کالا", banner.deeplink)
     }
 
     BackHandler(enabled = isBannerOverlayVisible) {
@@ -326,6 +333,14 @@ internal fun HomeScreen(
                 item {
                     val banners = data.heroBanners
                     val pagerState = rememberPagerState(pageCount = { banners.size.coerceAtLeast(1) })
+                    LaunchedEffect(banners.size) {
+                        if (banners.size <= 1) return@LaunchedEffect
+                        while (true) {
+                            delay(7_000)
+                            val nextPage = (pagerState.currentPage + 1) % banners.size
+                            pagerState.animateScrollToPage(nextPage)
+                        }
+                    }
                     HorizontalPager(
                         state = pagerState,
                         modifier = Modifier
@@ -351,7 +366,15 @@ internal fun HomeScreen(
                     }
                 }
 
-                item { ShortcutsRow(data, styleSpec) }
+                    item {
+                        ShortcutsRow(
+                            data = data,
+                            styleSpec = styleSpec,
+                            onShortcutClick = { shortcut ->
+                                openWebOverlay(shortcut.title, shortcut.deeplink)
+                            }
+                        )
+                    }
 
                 item {
                     IncredibleSection(
@@ -443,6 +466,7 @@ internal fun HomeScreen(
 
         if (isBannerOverlayVisible) {
             BannerWebViewOverlay(
+                title = bannerOverlayTitle,
                 url = bannerOverlayInitialUrl,
                 onClose = closeBannerOverlay,
                 onShare = {
@@ -520,6 +544,7 @@ private fun TopTabWebViewContainer(
 
 @Composable
 private fun BannerWebViewOverlay(
+    title: String,
     url: String,
     onClose: () -> Unit,
     onShare: () -> Unit,
@@ -547,7 +572,7 @@ private fun BannerWebViewOverlay(
                 )
             }
             Text(
-                text = "فروشگاه اینترنتی دیجی‌کالا",
+                text = title,
                 style = OpenKalaTypographyTokens.SubtitleStrong,
                 color = OpenKalaColorTokens.TextPrimary,
                 modifier = Modifier.weight(1f),
@@ -916,7 +941,8 @@ private fun SearchAndLocationSection(
 @Composable
 private fun ShortcutsRow(
     data: HomeScreenData,
-    styleSpec: HomeStyleSpec
+    styleSpec: HomeStyleSpec,
+    onShortcutClick: (ShortcutItem) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -932,7 +958,9 @@ private fun ShortcutsRow(
         data.shortcuts.forEach { item ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(styleSpec.shortcutLabelWidth)
+                modifier = Modifier
+                    .width(styleSpec.shortcutLabelWidth)
+                    .clickable { onShortcutClick(item) }
             ) {
                 AsyncImage(
                     model = item.iconUrl,
