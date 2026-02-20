@@ -365,27 +365,55 @@ internal fun HomeScreen(
                             pagerState.animateScrollToPage(nextPage)
                         }
                     }
-                    HorizontalPager(
-                        state = pagerState,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(OpenKalaColorTokens.Surface)
-                            .padding(vertical = 10.dp),
-                        contentPadding = PaddingValues(horizontal = styleSpec.heroCarouselHorizontalPadding),
-                        pageSpacing = styleSpec.heroCarouselPageSpacing
-                    ) { page ->
-                        val banner = banners.getOrNull(page)
-                        if (banner != null) {
-                            AsyncImage(
-                                model = banner.imageUrl,
-                                contentDescription = banner.title,
+                            .padding(vertical = 10.dp)
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            contentPadding = PaddingValues(horizontal = styleSpec.heroCarouselHorizontalPadding),
+                            pageSpacing = styleSpec.heroCarouselPageSpacing
+                        ) { page ->
+                            val banner = banners.getOrNull(page)
+                            if (banner != null) {
+                                AsyncImage(
+                                    model = banner.imageUrl,
+                                    contentDescription = banner.title,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(styleSpec.heroCardAspectRatio)
+                                        .clip(RoundedCornerShape(styleSpec.heroCardRadius))
+                                        .clickable { openBannerOverlay(banner) },
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+                        if (banners.size > 1) {
+                            Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(styleSpec.heroCardAspectRatio)
-                                    .clip(RoundedCornerShape(styleSpec.heroCardRadius))
-                                    .clickable { openBannerOverlay(banner) },
-                                contentScale = ContentScale.Crop
-                            )
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 8.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0x8A111827))
+                                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                repeat(banners.size) { index ->
+                                    val isSelected = index == pagerState.currentPage
+                                    Box(
+                                        modifier = Modifier
+                                            .size(width = if (isSelected) 14.dp else 6.dp, height = 6.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (isSelected) OpenKalaColorTokens.White
+                                                else Color(0x809CA3AF)
+                                            )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
