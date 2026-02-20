@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -53,7 +54,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -391,28 +395,51 @@ internal fun HomeScreen(
                             }
                         }
                         if (banners.size > 1) {
-                            Row(
+                            val indicatorSlotWidth = 14.dp
+                            val indicatorGap = 4.dp
+                            val indicatorStep = indicatorSlotWidth + indicatorGap
+                            val activeOffsetX by animateDpAsState(
+                                targetValue = indicatorStep * pagerState.currentPage,
+                                animationSpec = spring(
+                                    dampingRatio = 0.72f,
+                                    stiffness = Spring.StiffnessMedium
+                                ),
+                                label = "hero_indicator_offset"
+                            )
+                            Box(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = 8.dp)
                                     .clip(CircleShape)
                                     .background(Color(0x8A111827))
-                                    .padding(horizontal = 6.dp, vertical = 4.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .padding(horizontal = 6.dp, vertical = 4.dp)
                             ) {
-                                repeat(banners.size) { index ->
-                                    val isSelected = index == pagerState.currentPage
-                                    Box(
-                                        modifier = Modifier
-                                            .size(width = if (isSelected) 14.dp else 6.dp, height = 6.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (isSelected) OpenKalaColorTokens.White
-                                                else Color(0x809CA3AF)
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(indicatorGap),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    repeat(banners.size) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(width = indicatorSlotWidth, height = 6.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(6.dp)
+                                                    .clip(CircleShape)
+                                                    .background(Color(0x809CA3AF))
                                             )
-                                    )
+                                        }
+                                    }
                                 }
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = activeOffsetX)
+                                        .size(width = indicatorSlotWidth, height = 6.dp)
+                                        .clip(CircleShape)
+                                        .background(OpenKalaColorTokens.White)
+                                )
                             }
                         }
                     }
