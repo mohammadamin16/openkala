@@ -25,14 +25,16 @@ class HomeCacheStore @Inject constructor(
         return CacheSnapshot(
             homeJson = home,
             pillarsJson = pillars,
+            widget66Json = prefs[Keys.WIDGET66_JSON],
             updatedAt = prefs[Keys.UPDATED_AT] ?: 0L
         )
     }
 
-    suspend fun write(homeJson: String, pillarsJson: String) {
+    suspend fun write(homeJson: String, pillarsJson: String, widget66Json: String? = null) {
         context.homeDataStore.edit { prefs ->
             prefs[Keys.HOME_JSON] = homeJson
             prefs[Keys.PILLARS_JSON] = pillarsJson
+            widget66Json?.let { prefs[Keys.WIDGET66_JSON] = it }
             prefs[Keys.UPDATED_AT] = System.currentTimeMillis()
         }
     }
@@ -40,6 +42,7 @@ class HomeCacheStore @Inject constructor(
     private object Keys {
         val HOME_JSON: Preferences.Key<String> = stringPreferencesKey("home_json")
         val PILLARS_JSON: Preferences.Key<String> = stringPreferencesKey("pillars_json")
+        val WIDGET66_JSON: Preferences.Key<String> = stringPreferencesKey("widget66_json")
         val UPDATED_AT: Preferences.Key<Long> = longPreferencesKey("updated_at")
     }
 }
@@ -47,6 +50,6 @@ class HomeCacheStore @Inject constructor(
 data class CacheSnapshot(
     val homeJson: String,
     val pillarsJson: String,
+    val widget66Json: String?,
     val updatedAt: Long
 )
-

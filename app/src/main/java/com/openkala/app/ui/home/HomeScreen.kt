@@ -1,5 +1,6 @@
 package com.openkala.app.ui.home
 
+import android.content.Intent
 import android.graphics.Color.parseColor
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -38,11 +39,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
@@ -59,8 +63,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -73,6 +79,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.openkala.app.domain.model.Banner
+import com.openkala.app.domain.model.HomeCategoryItem
 import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.SuperAppTab
@@ -94,6 +101,7 @@ fun HomeScreenRoute(
     onProductClick: (IncredibleOfferItem) -> Unit = {},
     onSearchClick: () -> Unit = {},
     onWebModeChanged: (Boolean) -> Unit = {},
+    onBannerOpenStateChanged: (Boolean) -> Unit = {},
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
     viewModel: HomeViewModel = hiltViewModel()
@@ -102,10 +110,12 @@ fun HomeScreenRoute(
     when (state) {
         HomeUiState.Loading -> {
             LaunchedEffect(Unit) { onWebModeChanged(false) }
+            LaunchedEffect(Unit) { onBannerOpenStateChanged(false) }
             LoadingHomeScreen()
         }
         is HomeUiState.Error -> {
             LaunchedEffect(Unit) { onWebModeChanged(false) }
+            LaunchedEffect(Unit) { onBannerOpenStateChanged(false) }
             ErrorHomeScreen(
                 message = (state as HomeUiState.Error).message,
                 onRetry = viewModel::refresh
@@ -119,6 +129,7 @@ fun HomeScreenRoute(
             onProductClick = onProductClick,
             onSearchClick = onSearchClick,
             onWebModeChanged = onWebModeChanged,
+            onBannerOpenStateChanged = onBannerOpenStateChanged,
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope
         )
@@ -176,12 +187,18 @@ internal fun HomeScreen(
     onProductClick: (IncredibleOfferItem) -> Unit,
     onSearchClick: () -> Unit,
     onWebModeChanged: (Boolean) -> Unit,
+    onBannerOpenStateChanged: (Boolean) -> Unit,
     sharedTransitionScope: SharedTransitionScope?,
     animatedVisibilityScope: AnimatedVisibilityScope?
 ) {
+    val context = LocalContext.current
     var selectedTab by remember(data.selectedTabName) { mutableStateOf(data.selectedTabName) }
     var currentWebView by remember { mutableStateOf<WebView?>(null) }
     var webLoading by remember { mutableStateOf(false) }
+    var isBannerOverlayVisible by remember { mutableStateOf(false) }
+    var bannerOverlayInitialUrl by remember { mutableStateOf("") }
+    var bannerOverlayCurrentUrl by remember { mutableStateOf("") }
+    var bannerOverlayWebView by remember { mutableStateOf<WebView?>(null) }
     val selectedTabData = remember(data.superAppTabs, selectedTab) {
         data.superAppTabs.firstOrNull { it.name == selectedTab }
     }
@@ -211,11 +228,41 @@ internal fun HomeScreen(
     LaunchedEffect(inWebMode) {
         onWebModeChanged(inWebMode)
     }
+    LaunchedEffect(isBannerOverlayVisible) {
+        onBannerOpenStateChanged(isBannerOverlayVisible)
+    }
     DisposableEffect(Unit) {
-        onDispose { onWebModeChanged(false) }
+        onDispose {
+            onWebModeChanged(false)
+            onBannerOpenStateChanged(false)
+        }
     }
 
-    BackHandler(enabled = inWebMode) {
+    val closeBannerOverlay = {
+        isBannerOverlayVisible = false
+        bannerOverlayInitialUrl = ""
+        bannerOverlayCurrentUrl = ""
+        bannerOverlayWebView = null
+    }
+    val openBannerOverlay: (Banner) -> Unit = { banner ->
+        val normalized = normalizeWebUrl(banner.deeplink)
+        if (normalized.isNotBlank()) {
+            bannerOverlayInitialUrl = normalized
+            bannerOverlayCurrentUrl = normalized
+            isBannerOverlayVisible = true
+        }
+    }
+
+    BackHandler(enabled = isBannerOverlayVisible) {
+        val webView = bannerOverlayWebView
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            closeBannerOverlay()
+        }
+    }
+
+    BackHandler(enabled = inWebMode && !isBannerOverlayVisible) {
         val webView = currentWebView
         if (webView != null && webView.canGoBack()) {
             webView.goBack()
@@ -224,48 +271,49 @@ internal fun HomeScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .background(OpenKalaColorTokens.AppBackground)
             .testTag("home_root")
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(topTabsExpandedHeight * (1f - collapseProgress))
-        ) {
-            if (collapseProgress < 1f) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(1f - collapseProgress)
-                ) {
-                    TopTabsRow(
-                        tabs = data.superAppTabs,
-                        selectedTab = selectedTab,
-                        styleSpec = styleSpec,
-                        onTabClick = { tab -> selectedTab = tab.name }
-                    )
-                }
-            }
-        }
-
-        if (!inWebMode) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .testTag("home_native_content")
+                    .height(topTabsExpandedHeight * (1f - collapseProgress))
             ) {
-                LazyColumn(
+                if (collapseProgress < 1f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .alpha(1f - collapseProgress)
+                    ) {
+                        TopTabsRow(
+                            tabs = data.superAppTabs,
+                            selectedTab = selectedTab,
+                            styleSpec = styleSpec,
+                            onTabClick = { tab -> selectedTab = tab.name }
+                        )
+                    }
+                }
+            }
+
+            if (!inWebMode) {
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .testTag("home_list"),
-                    state = listState,
-                    contentPadding = PaddingValues(bottom = 10.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .testTag("home_native_content")
                 ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag("home_list"),
+                        state = listState,
+                        contentPadding = PaddingValues(bottom = 10.dp)
+                    ) {
                     stickyHeader {
                         SearchAndLocationSection(
                             styleSpec = styleSpec,
@@ -295,7 +343,8 @@ internal fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .aspectRatio(styleSpec.heroCardAspectRatio)
-                                    .clip(RoundedCornerShape(styleSpec.heroCardRadius)),
+                                    .clip(RoundedCornerShape(styleSpec.heroCardRadius))
+                                    .clickable { openBannerOverlay(banner) },
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -316,7 +365,8 @@ internal fun HomeScreen(
                 item {
                     TopBannersSection(
                         banners = data.topBanners,
-                        styleSpec = styleSpec
+                        styleSpec = styleSpec,
+                        onBannerClick = openBannerOverlay
                     )
                 }
 
@@ -332,6 +382,15 @@ internal fun HomeScreen(
                 item {
                     MiddlePromoBannersSection(
                         banners = data.middlePromoBanners,
+                        styleSpec = styleSpec,
+                        onBannerClick = openBannerOverlay
+                    )
+                }
+                item {
+                    HomeCategoriesSection(
+                        title = data.homeCategoriesTitle,
+                        rows = data.homeCategoriesRows,
+                        categories = data.homeCategories,
                         styleSpec = styleSpec
                     )
                 }
@@ -352,33 +411,52 @@ internal fun HomeScreen(
                             }
                         }
                     }
+                    }
                 }
-            }
-        } else {
-            TopTabWebViewContainer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .testTag("home_top_tab_webview_container"),
-                url = selectedTabData?.webUrl.orEmpty(),
-                onWebViewReady = { currentWebView = it },
-                onLoadingChanged = { webLoading = it }
-            )
-
-            if (webLoading) {
-                Row(
+            } else {
+                TopTabWebViewContainer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = DigikalaRed,
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp
-                    )
+                        .weight(1f)
+                        .testTag("home_top_tab_webview_container"),
+                    url = selectedTabData?.webUrl.orEmpty(),
+                    onWebViewReady = { currentWebView = it },
+                    onLoadingChanged = { webLoading = it }
+                )
+
+                if (webLoading) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = DigikalaRed,
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp
+                        )
+                    }
                 }
             }
+        }
+
+        if (isBannerOverlayVisible) {
+            BannerWebViewOverlay(
+                url = bannerOverlayInitialUrl,
+                onClose = closeBannerOverlay,
+                onShare = {
+                    val shareUrl = bannerOverlayCurrentUrl.ifBlank { bannerOverlayInitialUrl }
+                    if (shareUrl.isBlank()) return@BannerWebViewOverlay
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareUrl)
+                    }
+                    context.startActivity(Intent.createChooser(sendIntent, null))
+                },
+                onWebViewReady = { bannerOverlayWebView = it },
+                onCurrentUrlChanged = { bannerOverlayCurrentUrl = it }
+            )
         }
     }
 }
@@ -438,6 +516,99 @@ private fun TopTabWebViewContainer(
             }
         }
     )
+}
+
+@Composable
+private fun BannerWebViewOverlay(
+    url: String,
+    onClose: () -> Unit,
+    onShare: () -> Unit,
+    onWebViewReady: (WebView) -> Unit,
+    onCurrentUrlChanged: (String) -> Unit
+) {
+    val normalizedUrl = remember(url) { normalizeWebUrl(url) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(OpenKalaColorTokens.Surface)
+            .testTag("banner_webview_overlay")
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onShare) {
+                Icon(
+                    imageVector = Icons.Outlined.Share,
+                    contentDescription = "Share",
+                    tint = OpenKalaColorTokens.TextHigh
+                )
+            }
+            Text(
+                text = "فروشگاه اینترنتی دیجی‌کالا",
+                style = OpenKalaTypographyTokens.SubtitleStrong,
+                color = OpenKalaColorTokens.TextPrimary,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            IconButton(onClick = onClose) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = "Close",
+                    tint = OpenKalaColorTokens.TextHigh
+                )
+            }
+        }
+
+        if (normalizedUrl.isBlank()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "لینک این بخش در دسترس نیست",
+                    style = OpenKalaTypographyTokens.Subtitle,
+                    color = OpenKalaColorTokens.TextMedium
+                )
+            }
+            return
+        }
+
+        AndroidView(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("banner_webview"),
+            factory = { context ->
+                WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    settings.domStorageEnabled = true
+                    settings.loadsImagesAutomatically = true
+                    webViewClient = object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView?,
+                            request: WebResourceRequest?
+                        ): Boolean = false
+
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            onCurrentUrlChanged(url.orEmpty())
+                        }
+                    }
+                    loadUrl(normalizedUrl)
+                }
+            },
+            update = { webView ->
+                onWebViewReady(webView)
+                onCurrentUrlChanged(webView.url.orEmpty())
+                if (webView.url != normalizedUrl) {
+                    webView.loadUrl(normalizedUrl)
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -542,6 +713,111 @@ internal fun TopBannersSection(
                 }
                 if (rowBanners.size == 1) {
                     Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeCategoriesSection(
+    title: String,
+    rows: Int,
+    categories: List<HomeCategoryItem>,
+    styleSpec: HomeStyleSpec
+) {
+    if (categories.isEmpty()) return
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(OpenKalaColorTokens.AppBackground)
+            .padding(
+                start = styleSpec.categorySectionHorizontalPadding,
+                end = styleSpec.categorySectionHorizontalPadding,
+                top = styleSpec.categorySectionTopPadding,
+                bottom = styleSpec.categorySectionBottomPadding
+            )
+            .testTag("home_categories_section"),
+        verticalArrangement = Arrangement.spacedBy(styleSpec.categoryGridRowGap)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val rowCount = rows.coerceAtLeast(1)
+            val itemsPerRow = 5
+            val pageSize = rowCount * itemsPerRow
+            val pages = categories.chunked(pageSize)
+            Text(
+                text = title,
+                style = OpenKalaTypographyTokens.H5,
+                color = OpenKalaColorTokens.TextPrimary,
+                fontWeight = FontWeight.W900,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(
+                        top = styleSpec.categoryTitleTopPadding,
+                        bottom = styleSpec.categoryTitleBottomPadding
+                    )
+            )
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("home_categories_carousel"),
+                horizontalArrangement = Arrangement.spacedBy(styleSpec.categoryGridColumnGap)
+            ) {
+                items(pages) { pageItems ->
+                    val categoryRows = pageItems.chunked(itemsPerRow)
+                    Column(modifier = Modifier.fillParentMaxWidth()) {
+                        categoryRows.forEachIndexed { rowIndex, rowItems ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(styleSpec.categoryGridColumnGap)
+                            ) {
+                                rowItems.forEach { item ->
+                                    Column(
+                                        modifier = Modifier.weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(styleSpec.categoryImageSize)
+                                                .aspectRatio(1f)
+                                                .clip(RoundedCornerShape(10.dp))
+                                        ) {
+                                            AsyncImage(
+                                                model = item.imageUrl,
+                                                contentDescription = item.title,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .graphicsLayer(
+                                                        scaleX = 1.28f,
+                                                        scaleY = 1.28f
+                                                    )
+                                            )
+                                        }
+                                        Text(
+                                            text = item.title,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Center,
+                                            style = OpenKalaTypographyTokens.SubtitleStrong,
+                                            color = OpenKalaColorTokens.TextPrimary,
+                                            modifier = Modifier.padding(top = styleSpec.categoryLabelTopPadding)
+                                        )
+                                    }
+                                }
+                                repeat((itemsPerRow - rowItems.size).coerceAtLeast(0)) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                            if (rowIndex < categoryRows.lastIndex) {
+                                Spacer(modifier = Modifier.height(styleSpec.categoryGridRowGap))
+                            }
+                        }
+                    }
                 }
             }
         }

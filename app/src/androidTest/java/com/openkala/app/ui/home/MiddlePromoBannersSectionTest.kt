@@ -59,6 +59,7 @@ class MiddlePromoBannersSectionTest {
                 onProductClick = {},
                 onSearchClick = {},
                 onWebModeChanged = {},
+                onBannerOpenStateChanged = {},
                 sharedTransitionScope = null,
                 animatedVisibilityScope = null
             )

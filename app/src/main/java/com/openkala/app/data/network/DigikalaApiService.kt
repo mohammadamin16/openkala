@@ -12,6 +12,12 @@ interface DigikalaApiService {
     @GET("v1/super-app/pillars/")
     suspend fun getSuperAppPillars(): JsonObject
 
+    @GET("v1/widget-factory/widget/66/")
+    suspend fun getHomeCategoriesWidget(
+        @Query("endpoint") endpoint: String = "/v1/widget-factory/widget/66/",
+        @Query("sa_user") saUser: Boolean = true
+    ): JsonObject
+
     @GET("v2/product/{productId}/")
     suspend fun getProductDetail(
         @Path("productId") productId: Long

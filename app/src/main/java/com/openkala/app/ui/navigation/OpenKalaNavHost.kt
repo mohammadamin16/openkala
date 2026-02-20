@@ -108,8 +108,9 @@ fun OpenKalaNavHost() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route?.substringBefore("?")
     var isHomeTopTabWebMode by remember { mutableStateOf(false) }
+    var isHomeBannerOverlayVisible by remember { mutableStateOf(false) }
     val showBottomBar = when (currentRoute) {
-        HOME_ROUTE -> !isHomeTopTabWebMode
+        HOME_ROUTE -> !isHomeTopTabWebMode && !isHomeBannerOverlayVisible
         CATEGORIES_ROUTE -> true
         "search-results" -> true
         else -> false
@@ -118,6 +119,7 @@ fun OpenKalaNavHost() {
     LaunchedEffect(currentRoute) {
         if (currentRoute != HOME_ROUTE) {
             isHomeTopTabWebMode = false
+            isHomeBannerOverlayVisible = false
         }
     }
 
@@ -177,6 +179,9 @@ fun OpenKalaNavHost() {
                         },
                         onWebModeChanged = { isWebMode ->
                             isHomeTopTabWebMode = isWebMode
+                        },
+                        onBannerOpenStateChanged = { visible ->
+                            isHomeBannerOverlayVisible = visible
                         },
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this

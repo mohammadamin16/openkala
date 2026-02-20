@@ -51,10 +51,12 @@ fun mapProductDetail(
 
     val colorOptions = product.arrayAt("colors").mapNotNull { element ->
         val color = element.asObjectOrNull() ?: return@mapNotNull null
+        val title = color.stringAt("title").trim()
+        if (title.isBlank()) return@mapNotNull null
         val id = color.longAt("id")
         ProductColorOption(
             id = id,
-            title = color.stringAt("title"),
+            title = title,
             hexCode = color.stringAt("hex_code").ifBlank { "#D0D0D0" },
             variantId = variantByColor[id]
         )

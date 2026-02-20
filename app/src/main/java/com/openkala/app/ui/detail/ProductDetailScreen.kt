@@ -667,22 +667,32 @@ private fun ShimmerTextLine(
 }
 
 @Composable
-private fun ColorSection(
+internal fun ColorSection(
     data: ProductDetailData?,
     selectedVariantId: Long?,
     onVariantClick: (Long) -> Unit,
     isLoading: Boolean
 ) {
     val variants = data?.variants.orEmpty()
+    val colorOptions = data?.colorOptions.orEmpty().filter { it.title.isNotBlank() }
     val selectedVariant = variants.firstOrNull { it.id == selectedVariantId } ?: variants.firstOrNull()
+    val selectedColorTitle = selectedVariant?.colorTitle?.trim().orEmpty()
+    val selectedOptionTitle = colorOptions.firstOrNull { option ->
+        option.variantId == selectedVariant?.id ||
+            (selectedVariant?.colorId?.let { option.id == it } == true)
+    }?.title?.trim().orEmpty()
+    val resolvedColorTitle = selectedColorTitle.ifBlank {
+        selectedOptionTitle.ifBlank { "رنگ نامشخص" }
+    }
 
-    if (!isLoading && variants.isEmpty()) return
+    if (!isLoading && colorOptions.isEmpty()) return
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(OpenKalaColorTokens.Surface)
             .padding(horizontal = 14.dp, vertical = 12.dp)
+            .testTag("product_color_section")
     ) {
         Crossfade(targetState = isLoading, label = "color_crossfade") { loading ->
             if (loading) {
@@ -714,9 +724,10 @@ private fun ColorSection(
             } else {
                 Column {
                     Text(
-                        text = "رنگ: ${selectedVariant?.colorTitle.orEmpty()}",
+                        text = "رنگ: $resolvedColorTitle",
                         style = OpenKalaTypographyTokens.H5.copy(fontWeight = FontWeight.W800),
-                        color = OpenKalaColorTokens.TextPrimary
+                        color = OpenKalaColorTokens.TextPrimary,
+                        modifier = Modifier.testTag("product_color_header")
                     )
 
                     Row(
@@ -726,16 +737,16 @@ private fun ColorSection(
                             .padding(top = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        variants.forEach { variant ->
+                        colorOptions.forEach { option ->
+                            val isSelected = option.variantId == selectedVariant?.id ||
+                                (selectedVariant?.colorId?.let { option.id == it } == true)
                             ColorChip(
-                                option = ProductColorOption(
-                                    id = variant.colorId ?: variant.id,
-                                    title = variant.colorTitle,
-                                    hexCode = variant.colorHex,
-                                    variantId = variant.id
-                                ),
-                                selected = variant.id == selectedVariant?.id,
-                                onClick = { onVariantClick(variant.id) }
+                                option = option,
+                                selected = isSelected,
+                                enabled = option.variantId != null,
+                                onClick = {
+                                    option.variantId?.let(onVariantClick)
+                                }
                             )
                         }
                     }
@@ -749,18 +760,20 @@ private fun ColorSection(
 private fun ColorChip(
     option: ProductColorOption,
     selected: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .clip(OpenKalaRadiusTokens.Medium)
             .background(OpenKalaColorTokens.Surface)
+            .testTag("product_color_chip")
             .border(
                 width = if (selected) 2.dp else 1.dp,
                 color = if (selected) OpenKalaColorTokens.TextHigh else OpenKalaColorTokens.Border,
                 shape = OpenKalaRadiusTokens.Medium
             )
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -768,7 +781,8 @@ private fun ColorChip(
         Text(
             text = option.title,
             style = OpenKalaTypographyTokens.SubtitleStrong,
-            color = OpenKalaColorTokens.TextHigh
+            color = OpenKalaColorTokens.TextHigh,
+            modifier = Modifier.testTag("product_color_chip_title")
         )
         Box(
             modifier = Modifier

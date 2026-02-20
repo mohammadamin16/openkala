@@ -9,7 +9,10 @@ data class HomeScreenData(
     val incredibleOffers: IncredibleSection,
     val topBanners: List<Banner>,
     val freshIncredibleOffers: IncredibleSection,
-    val middlePromoBanners: List<Banner>
+    val middlePromoBanners: List<Banner>,
+    val homeCategoriesTitle: String,
+    val homeCategoriesRows: Int,
+    val homeCategories: List<HomeCategoryItem>
 )
 
 data class Banner(
@@ -35,6 +38,13 @@ data class ShortcutItem(
     val id: Long,
     val title: String,
     val iconUrl: String,
+    val deeplink: String
+)
+
+data class HomeCategoryItem(
+    val id: Long,
+    val title: String,
+    val imageUrl: String,
     val deeplink: String
 )
 

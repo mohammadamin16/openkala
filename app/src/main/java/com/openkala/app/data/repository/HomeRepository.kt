@@ -30,9 +30,10 @@ class HomeRepository @Inject constructor(
         if (cached != null) {
             val home = parse(cached.homeJson)
             val pillars = parse(cached.pillarsJson)
+            val widget66 = cached.widget66Json?.let(::parse) ?: JsonObject(emptyMap())
             emit(
                 HomeScreenPayload(
-                    data = mapHomeScreenData(home, pillars),
+                    data = mapHomeScreenData(home, pillars, widget66),
                     source = DataSource.CACHE
                 )
             )
@@ -43,15 +44,18 @@ class HomeRepository @Inject constructor(
             coroutineScope {
                 val homeDeferred = async { apiService.getHome() }
                 val pillarsDeferred = async { apiService.getSuperAppPillars() }
+                val widget66Deferred = async { apiService.getHomeCategoriesWidget() }
                 val home = homeDeferred.await()
                 val pillars = pillarsDeferred.await()
+                val widget66 = widget66Deferred.await()
                 cacheStore.write(
                     homeJson = json.encodeToString(JsonObject.serializer(), home),
-                    pillarsJson = json.encodeToString(JsonObject.serializer(), pillars)
+                    pillarsJson = json.encodeToString(JsonObject.serializer(), pillars),
+                    widget66Json = json.encodeToString(JsonObject.serializer(), widget66)
                 )
                 emit(
                     HomeScreenPayload(
-                        data = mapHomeScreenData(home, pillars),
+                        data = mapHomeScreenData(home, pillars, widget66),
                         source = DataSource.NETWORK
                     )
                 )

@@ -1,6 +1,7 @@
 package com.openkala.app.domain.mapper
 
 import com.openkala.app.domain.model.Banner
+import com.openkala.app.domain.model.HomeCategoryItem
 import com.openkala.app.domain.model.HomeScreenData
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.IncredibleSection
@@ -18,9 +19,10 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 
-fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
+fun mapHomeScreenData(home: JsonObject, pillars: JsonObject, widget66: JsonObject = JsonObject(emptyMap())): HomeScreenData {
     val homeData = home.objectAt("data")
     val pillarsData = pillars.objectAt("data")
+    val categoriesData = widget66.objectAt("data").objectAt("data").objectAt("default_groups")
 
     val allHeaderBanners = homeData.arrayAt("header_banners").mapNotNull { it.toBanner() }
     val topStrip = allHeaderBanners.firstOrNull()
@@ -41,6 +43,10 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
     ).mapNotNull { it.toBanner() }
         .filter { it.imageUrl.isNotBlank() }
         .take(4)
+    val homeCategoriesTitle = categoriesData.stringAt("title").ifBlank { "دسته‌بندی‌ها" }
+    val homeCategoriesRows = categoriesData.intAtOrNull("number_of_rows") ?: 2
+    val homeCategories = categoriesData.arrayAt("items")
+        .mapIndexedNotNull { index, item -> item.toHomeCategoryItem(index) }
 
     return HomeScreenData(
         topStripBanner = topStrip,
@@ -51,7 +57,10 @@ fun mapHomeScreenData(home: JsonObject, pillars: JsonObject): HomeScreenData {
         incredibleOffers = incredibleSection,
         topBanners = topBanners,
         freshIncredibleOffers = freshIncredibleSection,
-        middlePromoBanners = middlePromoBanners
+        middlePromoBanners = middlePromoBanners,
+        homeCategoriesTitle = homeCategoriesTitle,
+        homeCategoriesRows = homeCategoriesRows,
+        homeCategories = homeCategories
     )
 }
 
@@ -87,6 +96,19 @@ private fun JsonElement.toShortcutItem(): ShortcutItem? {
         title = obj.stringAt("title"),
         iconUrl = obj.objectAt("icon").arrayAt("url").firstString(),
         deeplink = obj.objectAt("url").stringAt("uri")
+    )
+}
+
+private fun JsonElement.toHomeCategoryItem(index: Int): HomeCategoryItem? {
+    val obj = asObjectOrNull() ?: return null
+    val imageUrl = obj.objectAt("image").stringAt("url")
+    val title = obj.stringAt("title")
+    if (imageUrl.isBlank() || title.isBlank()) return null
+    return HomeCategoryItem(
+        id = index.toLong(),
+        title = title,
+        imageUrl = imageUrl,
+        deeplink = obj.objectAt("link").stringAt("url")
     )
 }
 
