@@ -1,5 +1,7 @@
 # OpenKala
 
+![OpenKala Preview](./preview.gif)
+
 ![OpenKala Banner](./banner.png)
 
 A native Android Digikala client focused on speed, smoothness, and cache-first UX.
