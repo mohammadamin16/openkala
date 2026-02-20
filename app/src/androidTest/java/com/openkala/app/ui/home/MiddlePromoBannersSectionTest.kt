@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToNode
 import com.openkala.app.domain.model.Banner
 import com.openkala.app.domain.model.HomeScreenData
+import com.openkala.app.domain.model.HomeCategoryItem
 import com.openkala.app.domain.model.IncredibleOfferItem
 import com.openkala.app.domain.model.IncredibleSection
 import org.junit.Assert.assertTrue
@@ -102,7 +103,17 @@ class MiddlePromoBannersSectionTest {
                     )
                 )
             ),
-            middlePromoBanners = listOf(banner(201), banner(202), banner(203), banner(204))
+            middlePromoBanners = listOf(banner(201), banner(202), banner(203), banner(204)),
+            homeCategoriesTitle = "دسته‌بندی‌ها",
+            homeCategoriesRows = 2,
+            homeCategories = listOf(
+                HomeCategoryItem(
+                    id = 1L,
+                    title = "cat",
+                    imageUrl = "https://example.com/cat.jpg",
+                    deeplink = "/cat"
+                )
+            )
         )
     }
 

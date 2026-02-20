@@ -990,6 +990,7 @@ private fun IncredibleSection(
     pixelPerfectMode: Boolean,
     onProductClick: (IncredibleOfferItem) -> Unit
 ) {
+    if (items.isEmpty()) return
     val firstTimer = if (pixelPerfectMode) 31736L else (items.firstOrNull()?.timerSeconds ?: 0L)
     Column(
         modifier = Modifier
