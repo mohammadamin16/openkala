@@ -4,6 +4,8 @@
 
 A native Android Digikala client focused on speed, smoothness, and cache-first UX.
 
+This project was fully vibecoded using Codex GPT-5.3.
+
 ## Project Summary
 
 - Native Android app (Jetpack Compose + Kotlin), not React Native.
@@ -35,17 +37,8 @@ A native Android Digikala client focused on speed, smoothness, and cache-first U
 ./gradlew :app:assembleDebug
 ```
 
-Debug APK output:
-
-`app/build/outputs/apk/debug/app-debug.apk`
-
-## Release / Signing
-
-For release-signing setup, see:
-
-`README-signing.md`
-
 ## Notes
 
 - UI direction is fixed to RTL by design.
 - This is an independent client project and is not an official Digikala app.
+- AI-generated code still requires human review, security checks, and real-device QA before production use.
