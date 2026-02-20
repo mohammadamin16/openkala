@@ -6,6 +6,15 @@ A native Android Digikala client focused on speed, smoothness, and cache-first U
 
 This project was fully vibecoded using Codex GPT-5.3.
 
+
+## Install (APK)
+
+Download the latest APK from the [GitHub Releases](https://github.com/mohammadamin16/openkala/releases/latest) page.
+
+- Open the release
+- Download the apk file.
+- Install on your Android device.
+
 ## Project Summary
 
 - Native Android app (Jetpack Compose + Kotlin), not React Native.
@@ -37,8 +46,7 @@ This project was fully vibecoded using Codex GPT-5.3.
 ./gradlew :app:assembleDebug
 ```
 
-## Notes
 
-- UI direction is fixed to RTL by design.
-- This is an independent client project and is not an official Digikala app.
-- AI-generated code still requires human review, security checks, and real-device QA before production use.
+## Contact
+
+- Email: toutounchi.ma@gmail.com
